@@ -13,7 +13,7 @@ function toDateStr(year, month, day) {
   return `${year}-${pad(month + 1)}-${pad(day)}`;
 }
 
-export function CalendarView({ users }) {
+export function CalendarView() {
   const { token } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [cursor, setCursor] = useState(() => {
@@ -156,7 +156,6 @@ export function CalendarView({ users }) {
       {showForm && (
         <TaskEditModal
           task={editingTask}
-          users={users}
           onSubmit={handleUpdate}
           onCancel={() => {
             setShowForm(false);

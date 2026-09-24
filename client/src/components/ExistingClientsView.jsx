@@ -6,7 +6,7 @@ import { contractMonthsElapsed } from "../utils/contract";
 
 const CLIENT_STATUS_OPTIONS = ["既存企業"];
 
-export function ExistingClientsView({ users }) {
+export function ExistingClientsView() {
   const { token } = useAuth();
   const [clients, setClients] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
@@ -80,7 +80,6 @@ export function ExistingClientsView({ users }) {
               <th>連絡先</th>
               <th>契約月</th>
               <th>契約経過</th>
-              <th>自社担当</th>
             </tr>
           </thead>
           <tbody>
@@ -122,7 +121,6 @@ export function ExistingClientsView({ users }) {
                       <span className="muted">-</span>
                     )}
                   </td>
-                  <td>{c.assignee_name || <span className="muted">未割り当て</span>}</td>
                 </tr>
               );
             })}
@@ -133,7 +131,6 @@ export function ExistingClientsView({ users }) {
       {showForm && (
         <TaskEditModal
           task={editingTask}
-          users={users}
           statusOptions={CLIENT_STATUS_OPTIONS}
           onSubmit={handleUpdate}
           onCancel={() => {
@@ -146,7 +143,6 @@ export function ExistingClientsView({ users }) {
       {showCreate && (
         <TaskEditModal
           task={null}
-          users={users}
           statusOptions={CLIENT_STATUS_OPTIONS}
           defaultStatus="既存企業"
           onSubmit={handleCreate}

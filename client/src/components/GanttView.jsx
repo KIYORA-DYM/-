@@ -20,7 +20,7 @@ function daysInMonth(year, month) {
   return new Date(year, month + 1, 0).getDate();
 }
 
-export function GanttView({ users }) {
+export function GanttView() {
   const { token } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [cursor, setCursor] = useState(() => {
@@ -176,7 +176,6 @@ export function GanttView({ users }) {
       {showForm && (
         <TaskEditModal
           task={editingTask}
-          users={users}
           onSubmit={handleUpdate}
           onCancel={() => {
             setShowForm(false);

@@ -19,10 +19,9 @@ const initialForm = {
   next_follow_up_date: "",
   description: "",
   due_date: "",
-  assignee_id: "",
 };
 
-export function QuickAddWizard({ users, onSubmit, onCancel }) {
+export function QuickAddWizard({ onSubmit, onCancel }) {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState("");
@@ -42,7 +41,6 @@ export function QuickAddWizard({ users, onSubmit, onCancel }) {
       next_follow_up_date: form.next_follow_up_date || null,
       description: form.description,
       due_date: form.due_date || null,
-      assignee_id: form.assignee_id ? Number(form.assignee_id) : null,
     };
   }
 
@@ -169,17 +167,6 @@ export function QuickAddWizard({ users, onSubmit, onCancel }) {
               value={form.due_date}
               onChange={(e) => handleChange("due_date", e.target.value)}
             />
-          </label>
-          <label>
-            担当者
-            <select value={form.assignee_id} onChange={(e) => handleChange("assignee_id", e.target.value)}>
-              <option value="">未割り当て</option>
-              {users.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.name}
-                </option>
-              ))}
-            </select>
           </label>
           <label>
             メモ

@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
 import { TaskEditModal } from "./TaskEditModal";
 
-export function AnnouncementBar({ users = [], summary, onRefresh }) {
+export function AnnouncementBar({ summary, onRefresh }) {
   const { token, user } = useAuth();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -186,7 +186,6 @@ export function AnnouncementBar({ users = [], summary, onRefresh }) {
       {showForm && (
         <TaskEditModal
           task={editingTask}
-          users={users}
           onSubmit={handleUpdate}
           onCancel={() => {
             setShowForm(false);

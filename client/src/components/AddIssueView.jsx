@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
 import { QuickAddWizard } from "./QuickAddWizard";
 
-export function AddIssueView({ users, onNavigate }) {
+export function AddIssueView({ onNavigate }) {
   const { token } = useAuth();
   const [error, setError] = useState("");
 
@@ -25,7 +25,7 @@ export function AddIssueView({ users, onNavigate }) {
       {error && <p className="error-text">{error}</p>}
 
       <div className="card-panel">
-        <QuickAddWizard users={users} onSubmit={handleCreate} onCancel={() => onNavigate("home")} />
+        <QuickAddWizard onSubmit={handleCreate} onCancel={() => onNavigate("home")} />
       </div>
     </div>
   );

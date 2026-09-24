@@ -6,7 +6,7 @@ import { TaskEditModal } from "./TaskEditModal";
 const STATUSES = ["テレアポ", "リスケ", "落ち", "長期追い", "案件化"];
 const PRIORITY_CLASS = { 高: "priority-high", 中: "priority-mid", 低: "priority-low" };
 
-export function BoardView({ users }) {
+export function BoardView() {
   const { token } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
@@ -117,7 +117,6 @@ export function BoardView({ users }) {
       {showForm && (
         <TaskEditModal
           task={editingTask}
-          users={users}
           onSubmit={handleUpdate}
           onCancel={() => {
             setShowForm(false);

@@ -35,7 +35,6 @@ export function TaskList({ tasks, onEdit, onDelete, onStatusChange }) {
           <th>次回フォロー予定</th>
           <th>ステータス</th>
           <th>優先度</th>
-          <th>担当者</th>
           <th>操作</th>
         </tr>
       </thead>
@@ -75,7 +74,6 @@ export function TaskList({ tasks, onEdit, onDelete, onStatusChange }) {
                 {task.priority}
               </span>
             </td>
-            <td>{task.assignee_name || <span className="muted">未割り当て</span>}</td>
             <td className="actions">
               <button className="link-button danger" onClick={() => onDelete(task)}>
                 削除

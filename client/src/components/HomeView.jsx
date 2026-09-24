@@ -4,11 +4,10 @@ import { api } from "../api/client";
 import { TaskList } from "./TaskList";
 import { TaskEditModal } from "./TaskEditModal";
 
-export function HomeView({ users, onNavigate, summary, onMutate }) {
+export function HomeView({ onNavigate, summary, onMutate }) {
   const { token } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [statusFilter, setStatusFilter] = useState("");
-  const [assigneeFilter, setAssigneeFilter] = useState("");
   const [editingTask, setEditingTask] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState("");
@@ -23,7 +22,6 @@ export function HomeView({ users, onNavigate, summary, onMutate }) {
     try {
       const params = {};
       if (statusFilter) params.status = statusFilter;
-      if (assigneeFilter) params.assignee_id = assigneeFilter;
       const taskData = await api.getTasks(token, params);
       // 既存企業は専用の「既存企業管理」ページで扱うため、ホームには常に出さない
       setTasks(taskData.filter((t) => t.status !== "既存企業"));
@@ -37,7 +35,7 @@ export function HomeView({ users, onNavigate, summary, onMutate }) {
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statusFilter, assigneeFilter]);
+  }, [statusFilter]);
 
   const counts = useMemo(() => {
     return tasks.reduce(
@@ -157,14 +155,6 @@ export function HomeView({ users, onNavigate, summary, onMutate }) {
             <option value="長期追い">長期追い</option>
             <option value="案件化">案件化</option>
           </select>
-          <select value={assigneeFilter} onChange={(e) => setAssigneeFilter(e.target.value)}>
-            <option value="">すべての担当者</option>
-            {users.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.name}
-              </option>
-            ))}
-          </select>
         </div>
       </div>
 
@@ -173,7 +163,6 @@ export function HomeView({ users, onNavigate, summary, onMutate }) {
       {showForm && (
         <TaskEditModal
           task={editingTask}
-          users={users}
           onSubmit={handleUpdate}
           onCancel={() => {
             setShowForm(false);

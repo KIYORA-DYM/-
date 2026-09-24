@@ -46,19 +46,19 @@ export function AppShell() {
 
   return (
     <div className="app-root">
-      <AnnouncementBar users={users} summary={summary} onRefresh={refreshSummary} />
+      <AnnouncementBar summary={summary} onRefresh={refreshSummary} />
       <div className="app-shell">
         <Sidebar activeView={activeView} onNavigate={setActiveView} />
         <main className="app-main">
           {activeView === "home" && (
-            <HomeView users={users} onNavigate={setActiveView} summary={summary} onMutate={refreshSummary} />
+            <HomeView onNavigate={setActiveView} summary={summary} onMutate={refreshSummary} />
           )}
           {activeView === "todo" && <TodoView />}
-          {activeView === "add" && <AddIssueView users={users} onNavigate={setActiveView} />}
-          {activeView === "board" && <BoardView users={users} />}
-          {activeView === "gantt" && <GanttView users={users} />}
-          {activeView === "calendar" && <CalendarView users={users} />}
-          {activeView === "clients" && <ExistingClientsView users={users} onNavigate={setActiveView} />}
+          {activeView === "add" && <AddIssueView onNavigate={setActiveView} />}
+          {activeView === "board" && <BoardView />}
+          {activeView === "gantt" && <GanttView />}
+          {activeView === "calendar" && <CalendarView />}
+          {activeView === "clients" && <ExistingClientsView />}
           {activeView === "settings" && <SettingsView users={users} />}
         </main>
       </div>

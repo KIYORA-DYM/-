@@ -21,11 +21,9 @@ const emptyTask = {
   phone: "",
   next_follow_up_date: "",
   contract_month: "",
-  assignee_id: "",
 };
 
 export function TaskForm({
-  users,
   initialTask,
   statusOptions = DEFAULT_STATUS_OPTIONS,
   defaultStatus = "テレアポ",
@@ -53,7 +51,6 @@ export function TaskForm({
       due_date: task.due_date || null,
       next_follow_up_date: task.next_follow_up_date || null,
       contract_month: task.contract_month || null,
-      assignee_id: task.assignee_id ? Number(task.assignee_id) : null,
     });
   }
 
@@ -220,23 +217,6 @@ export function TaskForm({
             value={task.due_date || ""}
             onChange={(e) => handleChange("due_date", e.target.value)}
           />
-        </label>
-      </div>
-
-      <div className="form-row">
-        <label>
-          担当者
-          <select
-            value={task.assignee_id || ""}
-            onChange={(e) => handleChange("assignee_id", e.target.value)}
-          >
-            <option value="">未割り当て</option>
-            {users.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.name}
-              </option>
-            ))}
-          </select>
         </label>
       </div>
 
