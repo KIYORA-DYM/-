@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { migrate } from "./db.js";
@@ -16,8 +17,45 @@ import summaryRouter from "./routes/summary.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 
-app.use(cors());
+// Render sits the app behind a reverse proxy; without this, express-rate-limit
+// sees every request as coming from the proxy's IP and rate-limits everyone
+// as one client instead of per-visitor.
+app.set("trust proxy", 1);
+
+const allowedOrigins = new Set(
+  [
+    process.env.RENDER_EXTERNAL_URL,
+    process.env.ALLOWED_ORIGIN,
+    "http://localhost:5173",
+    "http://172.17.16.87:5173",
+    "http://172.17.16.87:4000",
+  ].filter(Boolean)
+);
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Same-origin requests (curl, server-to-server, or the production
+      // build served from this same app) send no Origin header at all.
+      if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+      callback(new Error("Not allowed by CORS"));
+    },
+  })
+);
 app.use(express.json());
+
+// Login/register are the only endpoints an attacker can hit without already
+// holding a valid token, so they're the ones worth throttling against
+// brute-force and registration-spam.
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "試行回数が多すぎます。しばらくしてからもう一度お試しください。" },
+});
+app.use("/api/auth/login", authLimiter);
+app.use("/api/auth/register", authLimiter);
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
