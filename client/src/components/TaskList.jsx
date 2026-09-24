@@ -42,7 +42,7 @@ export function TaskList({ tasks, onEdit, onDelete, onStatusChange }) {
       <tbody>
         {tasks.map((task) => (
           <tr key={task.id}>
-            <td>
+            <td className="clickable-cell" onClick={() => onEdit(task)}>
               {task.company_name && <div className="task-company">{task.company_name}</div>}
               <div className="task-title">{task.title}</div>
               {task.contact_name && <div className="task-desc">担当: {task.contact_name}</div>}
@@ -77,9 +77,6 @@ export function TaskList({ tasks, onEdit, onDelete, onStatusChange }) {
             </td>
             <td>{task.assignee_name || <span className="muted">未割り当て</span>}</td>
             <td className="actions">
-              <button className="link-button" onClick={() => onEdit(task)}>
-                編集
-              </button>
               <button className="link-button danger" onClick={() => onDelete(task)}>
                 削除
               </button>

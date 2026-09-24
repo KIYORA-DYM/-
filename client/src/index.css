@@ -1217,6 +1217,15 @@ label {
   background: #f7f8fa;
 }
 
+.task-table td.clickable-cell {
+  cursor: pointer;
+}
+
+.task-table td.clickable-cell:hover .task-title {
+  text-decoration: underline;
+  color: var(--accent);
+}
+
 .task-title {
   font-weight: 600;
 }
