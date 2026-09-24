@@ -141,6 +141,38 @@ label {
   margin: 8px 0;
 }
 
+.pending-text {
+  color: #a4671a;
+  background: #fdf3e0;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  margin: 8px 0;
+}
+
+.google-signin-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
 /* App shell / sidebar */
 .app-root {
   display: flex;
@@ -608,9 +640,20 @@ label {
 .member-list li {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 14px;
   padding: 8px 0;
   border-bottom: 1px solid var(--border);
+}
+
+.approval-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.approval-actions button {
+  font-size: 12px;
+  padding: 6px 12px;
 }
 
 .member-list li:last-child {

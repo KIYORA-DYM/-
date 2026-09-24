@@ -26,10 +26,22 @@ export function AuthProvider({ children }) {
     setUser(data.user);
   }
 
+  // Returns { pending: true } when the account needs admin approval instead
+  // of signing the person in immediately.
   async function register(name, email, password) {
     const data = await api.register({ name, email, password });
+    if (data.pending) return data;
     setToken(data.token);
     setUser(data.user);
+    return data;
+  }
+
+  async function loginWithGoogle(credential) {
+    const data = await api.loginWithGoogle(credential);
+    if (data.pending) return data;
+    setToken(data.token);
+    setUser(data.user);
+    return data;
   }
 
   function logout() {
@@ -38,7 +50,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ token, user, login, register, logout }}>
+    <AuthContext.Provider value={{ token, user, login, register, loginWithGoogle, logout }}>
       {children}
     </AuthContext.Provider>
   );

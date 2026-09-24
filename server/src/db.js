@@ -13,7 +13,10 @@ export async function migrate() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       email TEXT NOT NULL UNIQUE,
-      password_hash TEXT NOT NULL,
+      password_hash TEXT,
+      google_sub TEXT UNIQUE,
+      status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved')),
+      is_admin INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `);
@@ -73,6 +76,48 @@ export async function migrate() {
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `);
+
+  // Add Google login + approval-workflow columns to users, if this database
+  // predates them. IMPORTANT: never rename the live "users" table directly —
+  // other tables hold "REFERENCES users(id)" and SQLite silently rewrites
+  // those clauses to follow a rename, leaving them dangling once the old
+  // table is dropped. Instead build the replacement under a fresh name that
+  // nothing references yet, then swap it into place.
+  const userColumns = (await db.execute("PRAGMA table_info(users)")).rows.map((r) => r.name);
+  if (!userColumns.includes("google_sub")) {
+    await db.execute("PRAGMA foreign_keys = OFF");
+    await db.execute(`
+      CREATE TABLE users_new (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        password_hash TEXT,
+        google_sub TEXT UNIQUE,
+        status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved')),
+        is_admin INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )
+    `);
+    const commonColumns = ["id", "name", "email", "password_hash", "created_at"].filter((c) =>
+      userColumns.includes(c)
+    );
+    const colList = commonColumns.join(", ");
+    await db.execute(`INSERT INTO users_new (${colList}) SELECT ${colList} FROM users`);
+    await db.execute("DROP TABLE users");
+    await db.execute("ALTER TABLE users_new RENAME TO users");
+    // Grandfather in accounts that already existed before approval was required.
+    await db.execute("UPDATE users SET status = 'approved'");
+    await db.execute({
+      sql: "UPDATE users SET is_admin = 1 WHERE email = ?",
+      args: ["nitani-k@dym.jp"],
+    });
+    await db.execute("PRAGMA foreign_keys = ON");
+
+    const fkIssues = (await db.execute("PRAGMA foreign_key_check")).rows;
+    if (fkIssues.length > 0) {
+      throw new Error(`users migration left dangling foreign keys: ${JSON.stringify(fkIssues)}`);
+    }
+  }
 }
 
 export default db;

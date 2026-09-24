@@ -32,9 +32,9 @@ router.get("/", requireAuth, async (req, res) => {
     FROM tasks t
     LEFT JOIN users a ON a.id = t.assignee_id
     LEFT JOIN users c ON c.id = t.created_by
-    WHERE 1 = 1
+    WHERE t.created_by = ?
   `;
-  const params = [];
+  const params = [req.user.id];
 
   if (status) {
     query += " AND t.status = ?";
@@ -117,7 +117,7 @@ router.post("/", requireAuth, async (req, res) => {
 
 router.patch("/:id", requireAuth, async (req, res) => {
   const existing = (await db.execute({ sql: "SELECT * FROM tasks WHERE id = ?", args: [req.params.id] })).rows[0];
-  if (!existing) {
+  if (!existing || existing.created_by !== req.user.id) {
     return res.status(404).json({ error: "タスクが見つかりません" });
   }
 
@@ -177,7 +177,10 @@ router.patch("/:id", requireAuth, async (req, res) => {
 });
 
 router.delete("/:id", requireAuth, async (req, res) => {
-  const result = await db.execute({ sql: "DELETE FROM tasks WHERE id = ?", args: [req.params.id] });
+  const result = await db.execute({
+    sql: "DELETE FROM tasks WHERE id = ? AND created_by = ?",
+    args: [req.params.id, req.user.id],
+  });
   if (Number(result.rowsAffected) === 0) {
     return res.status(404).json({ error: "タスクが見つかりません" });
   }

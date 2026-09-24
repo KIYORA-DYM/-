@@ -4,8 +4,19 @@ import { requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
+async function ownsTask(taskId, userId) {
+  const row = (
+    await db.execute({ sql: "SELECT id FROM tasks WHERE id = ? AND created_by = ?", args: [taskId, userId] })
+  ).rows[0];
+  return !!row;
+}
+
 // GET /api/minutes/task/:taskId — meeting log for one company, newest first
 router.get("/task/:taskId", requireAuth, async (req, res) => {
+  if (!(await ownsTask(req.params.taskId, req.user.id))) {
+    return res.status(404).json({ error: "案件が見つかりません" });
+  }
+
   const result = await db.execute({
     sql: `SELECT m.*, u.name AS created_by_name
           FROM minutes m
@@ -18,8 +29,7 @@ router.get("/task/:taskId", requireAuth, async (req, res) => {
 });
 
 router.post("/task/:taskId", requireAuth, async (req, res) => {
-  const task = (await db.execute({ sql: "SELECT id FROM tasks WHERE id = ?", args: [req.params.taskId] })).rows[0];
-  if (!task) {
+  if (!(await ownsTask(req.params.taskId, req.user.id))) {
     return res.status(404).json({ error: "案件が見つかりません" });
   }
 
@@ -44,10 +54,17 @@ router.post("/task/:taskId", requireAuth, async (req, res) => {
 });
 
 router.delete("/:id", requireAuth, async (req, res) => {
-  const result = await db.execute({ sql: "DELETE FROM minutes WHERE id = ?", args: [req.params.id] });
-  if (Number(result.rowsAffected) === 0) {
+  const owned = (
+    await db.execute({
+      sql: `SELECT m.id FROM minutes m JOIN tasks t ON t.id = m.task_id WHERE m.id = ? AND t.created_by = ?`,
+      args: [req.params.id, req.user.id],
+    })
+  ).rows[0];
+  if (!owned) {
     return res.status(404).json({ error: "議事録が見つかりません" });
   }
+
+  await db.execute({ sql: "DELETE FROM minutes WHERE id = ?", args: [req.params.id] });
   res.status(204).end();
 });
 
