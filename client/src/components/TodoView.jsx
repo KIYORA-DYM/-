@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
 
+const NOTE_COLORS = ["note-yellow", "note-pink", "note-blue", "note-green", "note-orange", "note-purple"];
+
 export function TodoView() {
   const { token } = useAuth();
   const [todos, setTodos] = useState([]);
@@ -58,6 +60,7 @@ export function TodoView() {
 
   const activeTodos = todos.filter((t) => !t.completed);
   const doneTodos = todos.filter((t) => t.completed);
+  const ordered = [...activeTodos, ...doneTodos];
 
   return (
     <div className="view">
@@ -65,45 +68,46 @@ export function TodoView() {
         <h1>ToDoリスト</h1>
       </header>
 
-      <div className="card-panel">
-        <form className="todo-add-form" onSubmit={handleAdd}>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="やることを入力"
-            autoFocus
-          />
-          <button type="submit">追加</button>
-        </form>
-      </div>
+      <form className="todo-add-form" onSubmit={handleAdd}>
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="やることを入力"
+          autoFocus
+        />
+        <button type="submit">+ 付箋を追加</button>
+      </form>
 
       {error && <p className="error-text">{error}</p>}
 
       {loading ? (
         <p>読み込み中...</p>
+      ) : todos.length === 0 ? (
+        <p className="empty-state">ToDoはまだありません。</p>
       ) : (
-        <div className="card-panel">
-          {todos.length === 0 ? (
-            <p className="empty-state">ToDoはまだありません。</p>
-          ) : (
-            <ul className="todo-list">
-              {[...activeTodos, ...doneTodos].map((todo) => (
-                <li key={todo.id} className={todo.completed ? "todo-done" : ""}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={!!todo.completed}
-                      onChange={() => handleToggle(todo)}
-                    />
-                    <span>{todo.title}</span>
-                  </label>
-                  <button className="link-button danger" onClick={() => handleDelete(todo)}>
-                    削除
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+        <div className="note-board">
+          {ordered.map((todo, i) => (
+            <div
+              key={todo.id}
+              className={`sticky-note ${NOTE_COLORS[i % NOTE_COLORS.length]} ${
+                todo.completed ? "note-done" : ""
+              }`}
+              onClick={() => handleToggle(todo)}
+            >
+              <button
+                type="button"
+                className="note-delete"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(todo);
+                }}
+                aria-label="削除"
+              >
+                ×
+              </button>
+              <p className="note-text">{todo.title}</p>
+            </div>
+          ))}
         </div>
       )}
     </div>
