@@ -10,6 +10,7 @@ import tasksRouter from "./routes/tasks.js";
 import actionsRouter from "./routes/actions.js";
 import announcementsRouter from "./routes/announcements.js";
 import minutesRouter from "./routes/minutes.js";
+import todosRouter from "./routes/todos.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -23,6 +24,7 @@ app.use("/api/tasks", tasksRouter);
 app.use("/api/actions", actionsRouter);
 app.use("/api/announcements", announcementsRouter);
 app.use("/api/minutes", minutesRouter);
+app.use("/api/todos", todosRouter);
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 

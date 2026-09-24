@@ -9,6 +9,7 @@ import { BoardView } from "./BoardView";
 import { GanttView } from "./GanttView";
 import { CalendarView } from "./CalendarView";
 import { ExistingClientsView } from "./ExistingClientsView";
+import { TodoView } from "./TodoView";
 import { SettingsView } from "./SettingsView";
 
 export function AppShell() {
@@ -27,6 +28,7 @@ export function AppShell() {
         <Sidebar activeView={activeView} onNavigate={setActiveView} />
         <main className="app-main">
           {activeView === "home" && <HomeView users={users} onNavigate={setActiveView} />}
+          {activeView === "todo" && <TodoView />}
           {activeView === "add" && <AddIssueView users={users} onNavigate={setActiveView} />}
           {activeView === "board" && <BoardView users={users} />}
           {activeView === "gantt" && <GanttView users={users} />}
