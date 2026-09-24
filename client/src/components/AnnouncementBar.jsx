@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
 import { TaskEditModal } from "./TaskEditModal";
 
-export function AnnouncementBar({ users = [] }) {
+export function AnnouncementBar({ users = [], summary, onRefresh }) {
   const { token, user } = useAuth();
-  const [announcements, setAnnouncements] = useState([]);
-  const [reminders, setReminders] = useState([]);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -14,52 +12,37 @@ export function AnnouncementBar({ users = [] }) {
   const [editingTask, setEditingTask] = useState(null);
   const [showForm, setShowForm] = useState(false);
 
-  async function load() {
-    try {
-      const [announcementData, followUps, dueTasks, dueActions] = await Promise.all([
-        api.getAnnouncements(token),
-        api.getTasks(token, { follow_up: "overdue" }),
-        api.getTasks(token, { due: "overdue" }),
-        api.getAllActions(token, { due: "overdue" }),
-      ]);
-      setAnnouncements(announcementData);
+  const announcements = summary?.announcements || [];
 
-      // 既存企業は専用ページで管理するため、営業パイプラインの自動リマインドには出さない
-      const seenTaskIds = new Set();
-      const autoReminders = [];
-      for (const t of followUps.filter((t) => t.status !== "既存企業")) {
-        autoReminders.push({
-          key: `follow-${t.id}`,
-          text: `フォロー予定日超過: ${t.company_name || t.title}(${t.next_follow_up_date})`,
-          task: t,
-        });
-        seenTaskIds.add(t.id);
-      }
-      for (const t of dueTasks.filter((t) => t.status !== "既存企業")) {
-        if (seenTaskIds.has(t.id)) continue;
-        autoReminders.push({
-          key: `due-${t.id}`,
-          text: `期限超過: ${t.company_name || t.title}(期限 ${t.due_date})`,
-          task: t,
-        });
-      }
-      for (const a of dueActions.filter((a) => a.task_status !== "既存企業")) {
-        autoReminders.push({
-          key: `action-${a.id}`,
-          text: `今日までにやること: ${a.title}(${a.company_name || a.task_title})`,
-          task: { id: a.task_id },
-        });
-      }
-      setReminders(autoReminders);
-    } catch (err) {
-      setError(err.message);
+  // 既存企業は専用ページで管理するため、営業パイプラインの自動リマインドには出さない
+  const reminders = useMemo(() => {
+    const seenTaskIds = new Set();
+    const list = [];
+    for (const t of (summary?.overdueFollowUps || []).filter((t) => t.status !== "既存企業")) {
+      list.push({
+        key: `follow-${t.id}`,
+        text: `フォロー予定日超過: ${t.company_name || t.title}(${t.next_follow_up_date})`,
+        task: t,
+      });
+      seenTaskIds.add(t.id);
     }
-  }
-
-  useEffect(() => {
-    load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    for (const t of (summary?.overdueDueTasks || []).filter((t) => t.status !== "既存企業")) {
+      if (seenTaskIds.has(t.id)) continue;
+      list.push({
+        key: `due-${t.id}`,
+        text: `期限超過: ${t.company_name || t.title}(期限 ${t.due_date})`,
+        task: t,
+      });
+    }
+    for (const a of (summary?.overdueActions || []).filter((a) => a.task_status !== "既存企業")) {
+      list.push({
+        key: `action-${a.id}`,
+        text: `今日までにやること: ${a.title}(${a.company_name || a.task_title})`,
+        task: { id: a.task_id },
+      });
+    }
+    return list;
+  }, [summary]);
 
   async function handlePost(e) {
     e.preventDefault();
@@ -68,7 +51,7 @@ export function AnnouncementBar({ users = [] }) {
       await api.createAnnouncement(token, { title, body });
       setTitle("");
       setBody("");
-      await load();
+      await onRefresh();
     } catch (err) {
       setError(err.message);
     }
@@ -78,7 +61,7 @@ export function AnnouncementBar({ users = [] }) {
     if (!confirm("このお知らせを削除しますか?")) return;
     try {
       await api.deleteAnnouncement(token, a.id);
-      await load();
+      await onRefresh();
     } catch (err) {
       setError(err.message);
     }
@@ -86,6 +69,13 @@ export function AnnouncementBar({ users = [] }) {
 
   async function openReminder(reminder) {
     if (!reminder.task?.id) return;
+    // Follow-up/due reminders already carry the full task row from the
+    // summary batch; only the action-based ones need a lookup.
+    if (reminder.task.title !== undefined) {
+      setEditingTask(reminder.task);
+      setShowForm(true);
+      return;
+    }
     try {
       const full = await api.getTasks(token);
       const task = full.find((t) => t.id === reminder.task.id) || reminder.task;
@@ -101,7 +91,7 @@ export function AnnouncementBar({ users = [] }) {
       await api.updateTask(token, editingTask.id, taskInput);
       setShowForm(false);
       setEditingTask(null);
-      await load();
+      await onRefresh();
     } catch (err) {
       setError(err.message);
     }

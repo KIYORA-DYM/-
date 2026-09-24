@@ -4,6 +4,10 @@ import jwt from "jsonwebtoken";
 import db from "../db.js";
 
 const router = Router();
+// Render's free tier gives the process very little CPU, and bcrypt's cost
+// factor is deliberately CPU-heavy. 10 rounds measured ~400ms there; 8 is
+// still a strong work factor for an internal tool and cuts that by ~4x.
+const BCRYPT_ROUNDS = 8;
 
 function issueToken(row) {
   const user = { id: row.id, name: row.name, email: row.email, is_admin: !!row.is_admin };
@@ -32,7 +36,7 @@ router.post("/register", async (req, res) => {
   }
 
   const bootstrap = await isFirstUser();
-  const passwordHash = bcrypt.hashSync(password, 10);
+  const passwordHash = bcrypt.hashSync(password, BCRYPT_ROUNDS);
   const result = await db.execute({
     sql: "INSERT INTO users (name, email, password_hash, status, is_admin) VALUES (?, ?, ?, ?, ?)",
     args: [name, email, passwordHash, bootstrap ? "approved" : "pending", bootstrap ? 1 : 0],

@@ -4,17 +4,18 @@ import { api } from "../api/client";
 import { TaskList } from "./TaskList";
 import { TaskEditModal } from "./TaskEditModal";
 
-export function HomeView({ users, onNavigate }) {
+export function HomeView({ users, onNavigate, summary, onMutate }) {
   const { token } = useAuth();
   const [tasks, setTasks] = useState([]);
-  const [overdueFollowUps, setOverdueFollowUps] = useState([]);
-  const [upcomingFollowUps, setUpcomingFollowUps] = useState([]);
   const [statusFilter, setStatusFilter] = useState("");
   const [assigneeFilter, setAssigneeFilter] = useState("");
   const [editingTask, setEditingTask] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const overdueFollowUps = (summary?.overdueFollowUps || []).filter((t) => t.status !== "既存企業");
+  const upcomingFollowUps = (summary?.upcomingFollowUps || []).filter((t) => t.status !== "既存企業");
 
   async function loadData() {
     setLoading(true);
@@ -23,15 +24,9 @@ export function HomeView({ users, onNavigate }) {
       const params = {};
       if (statusFilter) params.status = statusFilter;
       if (assigneeFilter) params.assignee_id = assigneeFilter;
-      const [taskData, overdueData, upcomingData] = await Promise.all([
-        api.getTasks(token, params),
-        api.getTasks(token, { follow_up: "overdue" }),
-        api.getTasks(token, { follow_up: "upcoming" }),
-      ]);
+      const taskData = await api.getTasks(token, params);
       // 既存企業は専用の「既存企業管理」ページで扱うため、ホームには常に出さない
       setTasks(taskData.filter((t) => t.status !== "既存企業"));
-      setOverdueFollowUps(overdueData.filter((t) => t.status !== "既存企業"));
-      setUpcomingFollowUps(upcomingData.filter((t) => t.status !== "既存企業"));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -59,7 +54,7 @@ export function HomeView({ users, onNavigate }) {
       await api.updateTask(token, editingTask.id, taskInput);
       setShowForm(false);
       setEditingTask(null);
-      await loadData();
+      await Promise.all([loadData(), onMutate?.()]);
     } catch (err) {
       setError(err.message);
     }
@@ -68,7 +63,7 @@ export function HomeView({ users, onNavigate }) {
   async function handleStatusChange(task, status) {
     try {
       await api.updateTask(token, task.id, { status });
-      await loadData();
+      await Promise.all([loadData(), onMutate?.()]);
     } catch (err) {
       setError(err.message);
     }
@@ -78,7 +73,7 @@ export function HomeView({ users, onNavigate }) {
     if (!confirm(`「${task.title}」を削除しますか?`)) return;
     try {
       await api.deleteTask(token, task.id);
-      await loadData();
+      await Promise.all([loadData(), onMutate?.()]);
     } catch (err) {
       setError(err.message);
     }

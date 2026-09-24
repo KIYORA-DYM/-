@@ -55,6 +55,8 @@ export const api = {
     request(`/minutes/task/${taskId}`, { method: "POST", body, token }),
   deleteMinutes: (token, id) => request(`/minutes/${id}`, { method: "DELETE", token }),
 
+  getSummary: (token) => request("/summary", { token }),
+
   getTodos: (token) => request("/todos", { token }),
   createTodo: (token, body) => request("/todos", { method: "POST", body, token }),
   updateTodo: (token, id, body) => request(`/todos/${id}`, { method: "PATCH", body, token }),

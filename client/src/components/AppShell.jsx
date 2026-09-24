@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
 import { Sidebar } from "./Sidebar";
@@ -12,22 +12,47 @@ import { ExistingClientsView } from "./ExistingClientsView";
 import { TodoView } from "./TodoView";
 import { SettingsView } from "./SettingsView";
 
+const EMPTY_SUMMARY = {
+  overdueFollowUps: [],
+  upcomingFollowUps: [],
+  overdueDueTasks: [],
+  overdueActions: [],
+  announcements: [],
+};
+
 export function AppShell() {
   const { token } = useAuth();
   const [activeView, setActiveView] = useState("home");
   const [users, setUsers] = useState([]);
+  const [summary, setSummary] = useState(EMPTY_SUMMARY);
 
   useEffect(() => {
     api.getUsers(token).then(setUsers).catch(() => {});
   }, [token]);
 
+  // Shared across AnnouncementBar + HomeView so opening the app costs one
+  // batched round trip instead of both fetching their own overlapping data.
+  const refreshSummary = useCallback(async () => {
+    try {
+      setSummary(await api.getSummary(token));
+    } catch {
+      // leave the previous summary in place on a transient failure
+    }
+  }, [token]);
+
+  useEffect(() => {
+    refreshSummary();
+  }, [refreshSummary]);
+
   return (
     <div className="app-root">
-      <AnnouncementBar users={users} />
+      <AnnouncementBar users={users} summary={summary} onRefresh={refreshSummary} />
       <div className="app-shell">
         <Sidebar activeView={activeView} onNavigate={setActiveView} />
         <main className="app-main">
-          {activeView === "home" && <HomeView users={users} onNavigate={setActiveView} />}
+          {activeView === "home" && (
+            <HomeView users={users} onNavigate={setActiveView} summary={summary} onMutate={refreshSummary} />
+          )}
           {activeView === "todo" && <TodoView />}
           {activeView === "add" && <AddIssueView users={users} onNavigate={setActiveView} />}
           {activeView === "board" && <BoardView users={users} />}
