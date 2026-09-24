@@ -1,10 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
 export function AuthPage() {
-  const { login, register, loginWithGoogle } = useAuth();
+  const { login, register } = useAuth();
   const [mode, setMode] = useState("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -12,49 +10,6 @@ export function AuthPage() {
   const [error, setError] = useState("");
   const [pendingMessage, setPendingMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const googleButtonRef = useRef(null);
-
-  useEffect(() => {
-    if (!GOOGLE_CLIENT_ID) return;
-
-    let cancelled = false;
-    function trySetup() {
-      if (cancelled) return;
-      if (!window.google?.accounts?.id) {
-        setTimeout(trySetup, 150);
-        return;
-      }
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleCredential,
-      });
-      if (googleButtonRef.current) {
-        window.google.accounts.id.renderButton(googleButtonRef.current, {
-          theme: "outline",
-          size: "large",
-          width: 280,
-          text: "continue_with",
-          locale: "ja",
-        });
-      }
-    }
-    trySetup();
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function handleGoogleCredential(response) {
-    setError("");
-    setPendingMessage("");
-    try {
-      const result = await loginWithGoogle(response.credential);
-      if (result.pending) setPendingMessage(result.message);
-    } catch (err) {
-      setError(err.message);
-    }
-  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -82,15 +37,6 @@ export function AuthPage() {
         <p className="auth-subtitle">
           {mode === "login" ? "ログインしてください" : "新しいアカウントを作成"}
         </p>
-
-        {GOOGLE_CLIENT_ID && (
-          <>
-            <div className="google-signin-wrap" ref={googleButtonRef} />
-            <div className="auth-divider">
-              <span>または</span>
-            </div>
-          </>
-        )}
 
         {mode === "register" && (
           <label>
