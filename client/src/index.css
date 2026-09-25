@@ -459,8 +459,12 @@ label {
 
 .calendar-cell {
   min-height: 84px;
+  min-width: 0;
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
+  overflow: hidden;
+  margin: 0;
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   border-top: none;
@@ -476,6 +480,8 @@ label {
   cursor: pointer;
   border-radius: 0;
   color: inherit;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .calendar-cell:hover {
