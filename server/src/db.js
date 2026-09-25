@@ -81,8 +81,11 @@ export async function migrate() {
 
   await db.execute(`
     CREATE TABLE IF NOT EXISTS memos (
-      user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL DEFAULT '',
       content TEXT DEFAULT '',
+      created_by INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
   `);
@@ -147,6 +150,32 @@ export async function migrate() {
   const actionColumns = (await db.execute("PRAGMA table_info(actions)")).rows.map((r) => r.name);
   if (!actionColumns.includes("due_time")) {
     await db.execute("ALTER TABLE actions ADD COLUMN due_time TEXT");
+  }
+
+  // memos started out as one row per user (user_id as primary key). Rebuild
+  // into a proper list — each person can now have many titled memos — and
+  // carry over anything they'd already written as a first "メモ" entry.
+  const memoColumns = (await db.execute("PRAGMA table_info(memos)")).rows.map((r) => r.name);
+  if (!memoColumns.includes("title")) {
+    const oldMemos = (await db.execute("SELECT user_id, content FROM memos WHERE content != ''")).rows;
+    await db.execute("ALTER TABLE memos RENAME TO memos_old");
+    await db.execute(`
+      CREATE TABLE memos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL DEFAULT '',
+        content TEXT DEFAULT '',
+        created_by INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )
+    `);
+    for (const row of oldMemos) {
+      await db.execute({
+        sql: "INSERT INTO memos (title, content, created_by) VALUES (?, ?, ?)",
+        args: ["メモ", row.content, row.user_id],
+      });
+    }
+    await db.execute("DROP TABLE memos_old");
   }
 }
 

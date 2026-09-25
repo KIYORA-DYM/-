@@ -62,6 +62,8 @@ export const api = {
   updateTodo: (token, id, body) => request(`/todos/${id}`, { method: "PATCH", body, token }),
   deleteTodo: (token, id) => request(`/todos/${id}`, { method: "DELETE", token }),
 
-  getMemo: (token) => request("/memo", { token }),
-  saveMemo: (token, content) => request("/memo", { method: "PUT", body: { content }, token }),
+  getMemos: (token) => request("/memo", { token }),
+  createMemo: (token, body) => request("/memo", { method: "POST", body, token }),
+  updateMemo: (token, id, body) => request(`/memo/${id}`, { method: "PATCH", body, token }),
+  deleteMemo: (token, id) => request(`/memo/${id}`, { method: "DELETE", token }),
 };
