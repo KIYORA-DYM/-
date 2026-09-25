@@ -597,6 +597,10 @@ label {
   background: #595959;
 }
 
+.event-todo {
+  background: #c9a227;
+}
+
 .calendar-day-detail {
   margin-top: 16px;
 }
@@ -850,6 +854,19 @@ label {
 
 .todo-add-form input {
   flex: 1;
+}
+
+.todo-add-form .todo-date-input,
+.todo-add-form .todo-time-input {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.note-due {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #5a5230;
 }
 
 .note-board {

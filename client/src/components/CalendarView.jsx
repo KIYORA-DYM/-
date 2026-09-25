@@ -9,6 +9,13 @@ function pad(n) {
   return String(n).padStart(2, "0");
 }
 
+const EVENT_CLASS = {
+  action: "event-action",
+  due: "event-due",
+  follow: "event-follow",
+  todo: "event-todo",
+};
+
 function taskLabel(task) {
   const name = task.company_name || task.title;
   return task.status === "テレアポ" ? `☎ ${name}` : name;
@@ -22,6 +29,7 @@ export function CalendarView() {
   const { token } = useAuth();
   const [allTasks, setAllTasks] = useState([]);
   const [actions, setActions] = useState([]);
+  const [todos, setTodos] = useState([]);
   const [cursor, setCursor] = useState(() => {
     const now = new Date();
     return { year: now.getFullYear(), month: now.getMonth() };
@@ -36,12 +44,14 @@ export function CalendarView() {
     setLoading(true);
     setError("");
     try {
-      const [taskData, actionData] = await Promise.all([
+      const [taskData, actionData, todoData] = await Promise.all([
         api.getTasks(token),
         api.getAllActions(token, { completed: "0" }),
+        api.getTodos(token),
       ]);
       setAllTasks(taskData);
       setActions(actionData);
+      setTodos(todoData);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -73,8 +83,14 @@ export function CalendarView() {
         (map[a.due_date] ||= []).push({ key: `action-${a.id}`, kind: "action", action: a });
       }
     }
+    // 日付を指定した未完了のToDoだけをカレンダーに出す
+    for (const td of todos) {
+      if (td.due_date && !td.completed) {
+        (map[td.due_date] ||= []).push({ key: `todo-${td.id}`, kind: "todo", todo: td });
+      }
+    }
     return map;
-  }, [tasks, actions]);
+  }, [tasks, actions, todos]);
 
   const todayStr = new Date().toISOString().slice(0, 10);
 
@@ -167,13 +183,13 @@ export function CalendarView() {
                       {cell.events.slice(0, 2).map((ev) => (
                         <span
                           key={ev.key}
-                          className={`calendar-chip ${
-                            ev.kind === "action" ? "event-action" : ev.kind === "due" ? "event-due" : "event-follow"
-                          }`}
+                          className={`calendar-chip ${EVENT_CLASS[ev.kind]}`}
                         >
                           {ev.kind === "action"
                             ? ev.action.title
-                            : taskLabel(ev.task)}
+                            : ev.kind === "todo"
+                              ? `${ev.todo.due_time ? `${ev.todo.due_time} ` : ""}${ev.todo.title}`
+                              : taskLabel(ev.task)}
                         </span>
                       ))}
                       {cell.events.length > 2 && (
@@ -209,6 +225,17 @@ export function CalendarView() {
                         {a.title}
                         <span className="muted"> — {a.company_name || a.task_title}</span>
                       </span>
+                    </li>
+                  );
+                }
+                if (ev.kind === "todo") {
+                  const td = ev.todo;
+                  return (
+                    <li key={ev.key}>
+                      <span className="calendar-day-badge event-todo">
+                        ToDo{td.due_time ? `(${td.due_time})` : ""}
+                      </span>
+                      <span className="calendar-day-text">{td.title}</span>
                     </li>
                   );
                 }

@@ -8,6 +8,8 @@ export function TodoView() {
   const { token } = useAuth();
   const [todos, setTodos] = useState([]);
   const [title, setTitle] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [dueTime, setDueTime] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [showDone, setShowDone] = useState(false);
@@ -33,8 +35,14 @@ export function TodoView() {
     e.preventDefault();
     if (!title.trim()) return;
     try {
-      await api.createTodo(token, { title });
+      await api.createTodo(token, {
+        title,
+        due_date: dueDate || null,
+        due_time: dueDate ? dueTime || null : null,
+      });
       setTitle("");
+      setDueDate("");
+      setDueTime("");
       await loadData();
     } catch (err) {
       setError(err.message);
@@ -75,6 +83,24 @@ export function TodoView() {
           placeholder="やることを入力"
           autoFocus
         />
+        <input
+          type="date"
+          className="todo-date-input"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+          onClick={(e) => e.target.showPicker?.()}
+          title="日付(任意)"
+        />
+        {dueDate && (
+          <input
+            type="time"
+            className="todo-time-input"
+            value={dueTime}
+            onChange={(e) => setDueTime(e.target.value)}
+            onClick={(e) => e.target.showPicker?.()}
+            title="時間(任意)"
+          />
+        )}
         <button type="submit">+ 付箋を追加</button>
       </form>
 
@@ -107,6 +133,12 @@ export function TodoView() {
                   >
                     ×
                   </button>
+                  {todo.due_date && (
+                    <p className="note-due">
+                      🕒 {todo.due_date}
+                      {todo.due_time ? ` ${todo.due_time}` : ""}
+                    </p>
+                  )}
                   <p className="note-text">{todo.title}</p>
                 </div>
               ))}

@@ -152,6 +152,14 @@ export async function migrate() {
     await db.execute("ALTER TABLE actions ADD COLUMN due_time TEXT");
   }
 
+  const todoColumns = (await db.execute("PRAGMA table_info(todos)")).rows.map((r) => r.name);
+  if (!todoColumns.includes("due_date")) {
+    await db.execute("ALTER TABLE todos ADD COLUMN due_date TEXT");
+  }
+  if (!todoColumns.includes("due_time")) {
+    await db.execute("ALTER TABLE todos ADD COLUMN due_time TEXT");
+  }
+
   // memos started out as one row per user (user_id as primary key). Rebuild
   // into a proper list — each person can now have many titled memos — and
   // carry over anything they'd already written as a first "メモ" entry.

@@ -13,14 +13,14 @@ router.get("/", requireAuth, async (req, res) => {
 });
 
 router.post("/", requireAuth, async (req, res) => {
-  const { title } = req.body;
+  const { title, due_date = null, due_time = null } = req.body;
   if (!title) {
     return res.status(400).json({ error: "title は必須です" });
   }
 
   const result = await db.execute({
-    sql: "INSERT INTO todos (title, created_by) VALUES (?, ?)",
-    args: [title, req.user.id],
+    sql: "INSERT INTO todos (title, due_date, due_time, created_by) VALUES (?, ?, ?, ?)",
+    args: [title, due_date, due_date ? due_time : null, req.user.id],
   });
 
   const row = (await db.execute({ sql: "SELECT * FROM todos WHERE id = ?", args: [Number(result.lastInsertRowid)] }))
@@ -36,12 +36,16 @@ router.patch("/:id", requireAuth, async (req, res) => {
     return res.status(404).json({ error: "ToDoが見つかりません" });
   }
 
-  const { title, completed } = req.body;
+  const { title, completed, due_date, due_time } = req.body;
+  const nextDueDate = due_date === undefined ? existing.due_date : due_date;
+  const nextDueTime = due_time === undefined ? existing.due_time : due_time;
   await db.execute({
-    sql: "UPDATE todos SET title = ?, completed = ? WHERE id = ?",
+    sql: "UPDATE todos SET title = ?, completed = ?, due_date = ?, due_time = ? WHERE id = ?",
     args: [
       title ?? existing.title,
       completed === undefined ? existing.completed : completed ? 1 : 0,
+      nextDueDate,
+      nextDueDate ? nextDueTime : null,
       req.params.id,
     ],
   });
