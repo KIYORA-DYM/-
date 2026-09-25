@@ -14,6 +14,7 @@ import minutesRouter from "./routes/minutes.js";
 import todosRouter from "./routes/todos.js";
 import summaryRouter from "./routes/summary.js";
 import memoRouter from "./routes/memo.js";
+import adminRouter from "./routes/admin.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -67,6 +68,7 @@ app.use("/api/minutes", minutesRouter);
 app.use("/api/todos", todosRouter);
 app.use("/api/summary", summaryRouter);
 app.use("/api/memo", memoRouter);
+app.use("/api/admin", adminRouter);
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 

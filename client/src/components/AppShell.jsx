@@ -13,6 +13,7 @@ import { NextActionsView } from "./NextActionsView";
 import { TodoView } from "./TodoView";
 import { MemoView } from "./MemoView";
 import { SettingsView } from "./SettingsView";
+import { MemberActivityView } from "./MemberActivityView";
 
 const EMPTY_SUMMARY = {
   overdueFollowUps: [],
@@ -23,7 +24,7 @@ const EMPTY_SUMMARY = {
 };
 
 export function AppShell() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [activeView, setActiveView] = useState("home");
   const [users, setUsers] = useState([]);
   const [summary, setSummary] = useState(EMPTY_SUMMARY);
@@ -67,6 +68,7 @@ export function AppShell() {
           {activeView === "gantt" && <GanttView />}
           {activeView === "calendar" && <CalendarView />}
           {activeView === "clients" && <ExistingClientsView />}
+          {activeView === "members" && user?.is_admin && <MemberActivityView />}
           {activeView === "settings" && <SettingsView users={users} onUsersChange={loadUsers} />}
         </main>
       </div>

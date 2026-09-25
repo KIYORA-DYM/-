@@ -1,3 +1,5 @@
+import { useAuth } from "../context/AuthContext";
+
 const NAV_ITEMS = [
   { key: "home", label: "ホーム", icon: "🏠" },
   { key: "actions", label: "ネクストアクション", icon: "🎯" },
@@ -8,15 +10,19 @@ const NAV_ITEMS = [
   { key: "gantt", label: "ガントチャート", icon: "📅" },
   { key: "calendar", label: "カレンダー", icon: "🗓" },
   { key: "clients", label: "既存企業管理", icon: "🏢" },
+  { key: "members", label: "メンバー状況", icon: "👥", adminOnly: true },
   { key: "settings", label: "設定", icon: "⚙" },
 ];
 
 export function Sidebar({ activeView, onNavigate }) {
+  const { user } = useAuth();
+  const items = NAV_ITEMS.filter((item) => !item.adminOnly || user?.is_admin);
+
   return (
     <nav className="sidebar">
       <div className="sidebar-title">案件管理</div>
       <ul>
-        {NAV_ITEMS.map((item) => (
+        {items.map((item) => (
           <li key={item.key}>
             <button
               className={`sidebar-item ${activeView === item.key ? "active" : ""}`}

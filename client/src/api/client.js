@@ -29,6 +29,8 @@ export const api = {
   approveUser: (token, id) => request(`/users/${id}/approve`, { method: "POST", token }),
   rejectUser: (token, id) => request(`/users/${id}/reject`, { method: "POST", token }),
   deleteUser: (token, id) => request(`/users/${id}`, { method: "DELETE", token }),
+  getMemberUsage: (token) => request("/admin/usage", { token }),
+  getMemberData: (token, id) => request(`/admin/users/${id}/data`, { token }),
   getTasks: (token, params = {}) => {
     const qs = new URLSearchParams(params).toString();
     return request(`/tasks${qs ? `?${qs}` : ""}`, { token });
