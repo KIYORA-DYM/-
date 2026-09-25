@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
 
-export function SettingsView({ users }) {
+export function SettingsView({ users, onUsersChange }) {
   const { user, token, logout } = useAuth();
   const [pendingUsers, setPendingUsers] = useState([]);
   const [error, setError] = useState("");
@@ -34,6 +34,21 @@ export function SettingsView({ users }) {
     try {
       await api.rejectUser(token, u.id);
       await loadPending();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  async function handleDeleteMember(u) {
+    if (
+      !confirm(
+        `「${u.name}」を削除しますか?\nこの人が登録した案件・ToDo・メモ・お知らせもすべて削除され、元に戻せません。`
+      )
+    )
+      return;
+    try {
+      await api.deleteUser(token, u.id);
+      onUsersChange?.();
     } catch (err) {
       setError(err.message);
     }
@@ -90,7 +105,14 @@ export function SettingsView({ users }) {
           {users.map((u) => (
             <li key={u.id}>
               <span>{u.name}</span>
-              <span className="muted">{u.email}</span>
+              <span className="approval-actions">
+                <span className="muted">{u.email}</span>
+                {user?.is_admin && u.id !== user.id && (
+                  <button className="link-button danger" onClick={() => handleDeleteMember(u)}>
+                    削除
+                  </button>
+                )}
+              </span>
             </li>
           ))}
         </ul>

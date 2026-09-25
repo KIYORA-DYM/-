@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import db from "../db.js";
 
-export function requireAuth(req, res, next) {
+export async function requireAuth(req, res, next) {
   const header = req.headers.authorization;
   const token = header?.startsWith("Bearer ") ? header.slice(7) : null;
 
@@ -11,10 +11,21 @@ export function requireAuth(req, res, next) {
 
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
-    next();
   } catch {
     return res.status(401).json({ error: "トークンが無効です" });
   }
+
+  // A token stays valid for days, so also confirm the account still exists —
+  // otherwise a member the admin deleted could keep using the app until it expires.
+  try {
+    const result = await db.execute({ sql: "SELECT status FROM users WHERE id = ?", args: [req.user.id] });
+    if (result.rows[0]?.status !== "approved") {
+      return res.status(401).json({ error: "このアカウントは利用できません" });
+    }
+  } catch {
+    return res.status(500).json({ error: "サーバーエラーが発生しました" });
+  }
+  next();
 }
 
 export async function requireAdmin(req, res, next) {

@@ -28,9 +28,13 @@ export function AppShell() {
   const [users, setUsers] = useState([]);
   const [summary, setSummary] = useState(EMPTY_SUMMARY);
 
-  useEffect(() => {
+  const loadUsers = useCallback(() => {
     api.getUsers(token).then(setUsers).catch(() => {});
   }, [token]);
+
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
   // Shared across AnnouncementBar + HomeView so opening the app costs one
   // batched round trip instead of both fetching their own overlapping data.
@@ -63,7 +67,7 @@ export function AppShell() {
           {activeView === "gantt" && <GanttView />}
           {activeView === "calendar" && <CalendarView />}
           {activeView === "clients" && <ExistingClientsView />}
-          {activeView === "settings" && <SettingsView users={users} />}
+          {activeView === "settings" && <SettingsView users={users} onUsersChange={loadUsers} />}
         </main>
       </div>
     </div>

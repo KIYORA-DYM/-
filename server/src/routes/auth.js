@@ -15,6 +15,13 @@ function issueToken(row) {
   return { token, user };
 }
 
+// 社内ドメインのアドレスは管理者の承認なしで使えるようにする
+const AUTO_APPROVE_DOMAIN = "@dym.jp";
+
+function isCompanyEmail(email) {
+  return String(email).trim().toLowerCase().endsWith(AUTO_APPROVE_DOMAIN);
+}
+
 async function isFirstUser() {
   const result = await db.execute("SELECT count(*) AS c FROM users");
   return Number(result.rows[0].c) === 0;
@@ -36,17 +43,20 @@ router.post("/register", async (req, res) => {
   }
 
   const bootstrap = await isFirstUser();
+  const autoApprove = bootstrap || isCompanyEmail(email);
   const passwordHash = bcrypt.hashSync(password, BCRYPT_ROUNDS);
   const result = await db.execute({
     sql: "INSERT INTO users (name, email, password_hash, status, is_admin) VALUES (?, ?, ?, ?, ?)",
-    args: [name, email, passwordHash, bootstrap ? "approved" : "pending", bootstrap ? 1 : 0],
+    args: [name, email, passwordHash, autoApprove ? "approved" : "pending", bootstrap ? 1 : 0],
   });
 
-  if (!bootstrap) {
+  if (!autoApprove) {
     return res.status(201).json({ pending: true, message: "登録を受け付けました。管理者の承認をお待ちください。" });
   }
 
-  res.status(201).json(issueToken({ id: Number(result.lastInsertRowid), name, email, is_admin: 1 }));
+  res
+    .status(201)
+    .json(issueToken({ id: Number(result.lastInsertRowid), name, email, is_admin: bootstrap ? 1 : 0 }));
 });
 
 router.post("/login", async (req, res) => {

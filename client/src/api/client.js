@@ -28,6 +28,7 @@ export const api = {
   getPendingUsers: (token) => request("/users/pending", { token }),
   approveUser: (token, id) => request(`/users/${id}/approve`, { method: "POST", token }),
   rejectUser: (token, id) => request(`/users/${id}/reject`, { method: "POST", token }),
+  deleteUser: (token, id) => request(`/users/${id}`, { method: "DELETE", token }),
   getTasks: (token, params = {}) => {
     const qs = new URLSearchParams(params).toString();
     return request(`/tasks${qs ? `?${qs}` : ""}`, { token });
