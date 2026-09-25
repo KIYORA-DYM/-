@@ -4,14 +4,14 @@
   --bg: #ffffff;
   --card-bg: #ffffff;
   --border: #dcdcdc;
-  --accent: #7b5fc4;
-  --accent-hover: #5f479e;
-  --accent-soft: #ede8f8;
+  --accent: #1f9dc0;
+  --accent-hover: #16788f;
+  --accent-soft: #e2f4f8;
   --ink: #111111;
   --navy: #0d1b3e;
   --danger: #b1483a;
   --todo: #a3a3a3;
-  --doing: #29a3c9;
+  --doing: #7b5fc4;
   --done: #7cb342;
   --high: #b1483a;
   --mid: #8a8a8a;
@@ -694,7 +694,7 @@ label {
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
   font-weight: 700;
-  border-left-color: #9d84d6;
+  border-left-color: #38c6ea;
   box-shadow: none;
 }
 
