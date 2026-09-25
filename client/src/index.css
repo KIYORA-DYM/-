@@ -1483,19 +1483,6 @@ label {
   border-bottom: 2px solid var(--accent);
 }
 
-.home-tab-count {
-  background: var(--text-muted);
-  color: #fff;
-  font-size: 11px;
-  padding: 1px 7px;
-  border-radius: 0;
-}
-
-.home-tab.active .home-tab-count {
-  background: var(--accent);
-  color: #0f3a2c;
-}
-
 .filters {
   display: flex;
   gap: 8px;

@@ -9,6 +9,11 @@ function pad(n) {
   return String(n).padStart(2, "0");
 }
 
+function taskLabel(task) {
+  const name = task.company_name || task.title;
+  return task.status === "テレアポ" ? `☎ ${name}` : name;
+}
+
 function toDateStr(year, month, day) {
   return `${year}-${pad(month + 1)}-${pad(day)}`;
 }
@@ -168,7 +173,7 @@ export function CalendarView() {
                         >
                           {ev.kind === "action"
                             ? ev.action.title
-                            : ev.task.company_name || ev.task.title}
+                            : taskLabel(ev.task)}
                         </span>
                       ))}
                       {cell.events.length > 2 && (
@@ -219,7 +224,7 @@ export function CalendarView() {
                     <span className={`calendar-day-badge ${ev.kind === "due" ? "event-due" : "event-follow"}`}>
                       {ev.kind === "due" ? "期限" : "フォロー"}
                     </span>
-                    <span className="calendar-day-text">{t.company_name || t.title}</span>
+                    <span className="calendar-day-text">{taskLabel(t)}</span>
                   </li>
                 );
               })}

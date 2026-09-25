@@ -190,9 +190,6 @@ export function HomeView({ onNavigate, summary, onMutate }) {
             onClick={() => setTab(t.key)}
           >
             {t.label}
-            {t.key === "ochi" && counts["落ち"] > 0 && (
-              <span className="home-tab-count">{counts["落ち"]}</span>
-            )}
           </button>
         ))}
       </div>
