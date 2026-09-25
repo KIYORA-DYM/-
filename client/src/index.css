@@ -606,6 +606,82 @@ label {
   font-size: 15px;
 }
 
+.na-group {
+  margin-bottom: 16px;
+}
+
+.na-group.na-overdue h2 {
+  color: var(--danger);
+}
+
+.na-group.na-overdue {
+  background: #fdecec;
+  border-color: #f3c6c6;
+}
+
+.na-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.na-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.na-list li:last-child {
+  border-bottom: none;
+}
+
+.na-list input[type="checkbox"] {
+  width: auto;
+}
+
+.na-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.na-company {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.na-title {
+  font-size: 12px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.na-due {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.na-overdue .na-due {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.na-list li.na-done .na-title,
+.na-list li.na-done .na-company {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
 .member-list {
   list-style: none;
   margin: 0;
@@ -1050,6 +1126,10 @@ label {
   font-size: 11px;
   color: var(--text-muted);
   font-weight: 400;
+}
+
+.follow-up-field input[type="date"] {
+  cursor: pointer;
 }
 
 .wizard-steps {

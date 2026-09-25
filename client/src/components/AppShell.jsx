@@ -9,6 +9,7 @@ import { BoardView } from "./BoardView";
 import { GanttView } from "./GanttView";
 import { CalendarView } from "./CalendarView";
 import { ExistingClientsView } from "./ExistingClientsView";
+import { NextActionsView } from "./NextActionsView";
 import { TodoView } from "./TodoView";
 import { SettingsView } from "./SettingsView";
 
@@ -53,6 +54,7 @@ export function AppShell() {
           {activeView === "home" && (
             <HomeView onNavigate={setActiveView} summary={summary} onMutate={refreshSummary} />
           )}
+          {activeView === "actions" && <NextActionsView />}
           {activeView === "todo" && <TodoView />}
           {activeView === "add" && <AddIssueView onNavigate={setActiveView} />}
           {activeView === "board" && <BoardView />}

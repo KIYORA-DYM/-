@@ -207,6 +207,7 @@ export function TaskForm({
           type="date"
           value={task.next_follow_up_date || ""}
           onChange={(e) => handleChange("next_follow_up_date", e.target.value)}
+          onClick={(e) => e.target.showPicker?.()}
         />
         <span className="field-hint">
           「〇月ごろ」と言われた場合はその月の1日など、目安の日付を入れてください。近づくとダッシュボード上部に表示されます。

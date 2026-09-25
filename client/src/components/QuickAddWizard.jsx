@@ -171,6 +171,7 @@ export function QuickAddWizard({ onSubmit, onCancel }) {
               type="date"
               value={form.next_follow_up_date}
               onChange={(e) => handleChange("next_follow_up_date", e.target.value)}
+              onClick={(e) => e.target.showPicker?.()}
             />
           </label>
           <label>
