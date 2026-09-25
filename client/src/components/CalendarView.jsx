@@ -158,9 +158,10 @@ export function CalendarView() {
                             key={ev.key}
                             className="calendar-event event-action"
                             onClick={() => openTaskById(a.task_id)}
-                            title={a.title}
+                            title={`${a.company_name || a.task_title}: ${a.title}`}
                           >
-                            NA{a.due_time ? `(${a.due_time})` : ""}: {a.company_name || a.task_title}
+                            {a.due_time ? `(${a.due_time}) ` : ""}
+                            {a.title}
                           </div>
                         );
                       }
