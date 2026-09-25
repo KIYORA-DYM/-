@@ -16,9 +16,9 @@
   --high: #b1483a;
   --mid: #c98a3e;
   --low: #85796a;
-  --radius: 10px;
-  --shadow-sm: 0 1px 2px rgba(28, 26, 23, 0.06);
-  --shadow-md: 0 6px 20px rgba(28, 26, 23, 0.08);
+  --radius: 0;
+  --shadow-sm: 0 1px 0 rgba(13, 27, 62, 0.12);
+  --shadow-md: 0 3px 10px rgba(13, 27, 62, 0.16);
 
   font: 15px/1.6 "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
   color: var(--text);
@@ -49,7 +49,7 @@ button {
   font: inherit;
   cursor: pointer;
   border: none;
-  border-radius: 7px;
+  border-radius: 0;
   background: var(--accent);
   color: #ffffff;
   padding: 9px 18px;
@@ -110,7 +110,7 @@ select {
   font: inherit;
   padding: 9px 12px;
   border: 1px solid var(--border);
-  border-radius: 7px;
+  border-radius: 0;
   background: var(--card-bg);
   color: var(--text);
   width: 100%;
@@ -153,7 +153,7 @@ label {
   max-width: 380px;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 0;
   padding: 36px;
   box-shadow: var(--shadow-md);
 }
@@ -186,7 +186,7 @@ label {
 .pending-text {
   color: #96662c;
   background: #f5ecd9;
-  border-radius: 6px;
+  border-radius: 0;
   padding: 10px 12px;
   font-size: 13px;
   margin: 8px 0;
@@ -284,7 +284,7 @@ label {
   color: var(--danger);
   background: #f7e6e1;
   padding: 6px 10px;
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
 }
 
@@ -367,7 +367,7 @@ label {
   overflow-x: auto;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 0;
   padding: 8px;
 }
 
@@ -430,7 +430,7 @@ label {
 
 .gantt-bar {
   height: 18px;
-  border-radius: 4px;
+  border-radius: 0;
   cursor: pointer;
   align-self: center;
 }
@@ -475,7 +475,7 @@ label {
 .calendar {
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -572,7 +572,7 @@ label {
   box-sizing: border-box;
   font-size: 10px;
   padding: 1px 6px;
-  border-radius: 4px;
+  border-radius: 0;
   color: #fff;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -626,7 +626,7 @@ label {
   font-size: 11px;
   font-weight: 600;
   padding: 2px 8px;
-  border-radius: 999px;
+  border-radius: 0;
   color: #fff;
   white-space: nowrap;
 }
@@ -645,7 +645,7 @@ label {
   width: 224px;
   flex-shrink: 0;
   background: var(--navy);
-  color: #cdc4b6;
+  color: #a9b6d6;
   padding: 24px 0;
   display: flex;
   flex-direction: column;
@@ -653,10 +653,11 @@ label {
 
 .sidebar-title {
   font-weight: 800;
-  color: #fbf8f2;
+  color: #f2f4fa;
   padding: 0 22px 24px;
   font-size: 16px;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .sidebar ul {
@@ -674,25 +675,27 @@ label {
   align-items: center;
   gap: 11px;
   background: none;
-  color: #b5aa98;
-  border-radius: 8px;
+  color: #8c9bc4;
+  border-radius: 0;
   padding: 11px 14px;
   text-align: left;
   font-size: 13.5px;
   font-weight: 500;
-  transition: background 0.15s ease, color 0.15s ease;
+  border-left: 3px solid transparent;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
 }
 
 .sidebar-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #fbf8f2;
+  background: rgba(255, 255, 255, 0.07);
+  color: #f2f4fa;
 }
 
 .sidebar-item.active {
-  background: var(--accent);
+  background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
-  font-weight: 600;
-  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+  border-left-color: var(--accent);
+  box-shadow: none;
 }
 
 .sidebar-item:hover:not(.active) {
@@ -917,7 +920,7 @@ label {
   position: relative;
   min-height: 150px;
   padding: 18px 14px 14px;
-  border-radius: 2px;
+  border-radius: 0;
   box-shadow: 3px 4px 10px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   transform: rotate(var(--note-rotate, -1.5deg));
@@ -962,7 +965,7 @@ label {
   font-size: 18px;
   line-height: 1;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 .note-delete:hover {
@@ -1047,7 +1050,7 @@ label {
 
 .board-count {
   background: var(--card-bg);
-  border-radius: 999px;
+  border-radius: 0;
   padding: 1px 8px;
   font-size: 12px;
   color: var(--text-muted);
@@ -1063,7 +1066,7 @@ label {
 .board-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 0;
   padding: 10px;
   cursor: pointer;
   display: flex;
@@ -1170,7 +1173,7 @@ label {
 }
 
 .alert-card {
-  border-radius: 8px;
+  border-radius: 0;
   padding: 14px 16px;
   border: 1px solid var(--border);
 }
@@ -1198,7 +1201,7 @@ label {
   font-size: 13px;
   cursor: pointer;
   padding: 4px 6px;
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 .alert-card li:hover {
@@ -1244,7 +1247,7 @@ label {
   font-size: 13px;
   font-weight: 600;
   padding: 2px 8px;
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 .follow-up-overdue {
@@ -1281,7 +1284,7 @@ label {
 .quick-add-more {
   margin: 8px 0 16px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 0;
   padding: 10px 14px;
 }
 
@@ -1344,7 +1347,7 @@ label {
 
 .minutes-list li {
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 0;
   padding: 10px 12px;
 }
 
@@ -1381,7 +1384,7 @@ label {
   font-size: 13px;
   padding: 6px 8px;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 0;
 }
 
 .action-checklist li label {
@@ -1458,7 +1461,7 @@ label {
   gap: 6px;
   background: none;
   color: var(--text-muted);
-  border-radius: 8px 8px 0 0;
+  border-radius: 0;
   padding: 10px 16px;
   font-size: 14px;
   border-bottom: 2px solid transparent;
@@ -1481,7 +1484,7 @@ label {
   color: #fff;
   font-size: 11px;
   padding: 1px 7px;
-  border-radius: 999px;
+  border-radius: 0;
 }
 
 .home-tab.active .home-tab-count {
@@ -1558,7 +1561,7 @@ label {
 
 .status-badge {
   border: none;
-  border-radius: 999px;
+  border-radius: 0;
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 600;
@@ -1606,13 +1609,13 @@ label {
   font-size: 12px;
   font-weight: 600;
   padding: 2px 8px;
-  border-radius: 4px;
+  border-radius: 0;
   background: #e6ddf0;
   color: #7c6a9e;
 }
 
 .priority-badge {
-  border-radius: 4px;
+  border-radius: 0;
   padding: 3px 8px;
   font-size: 12px;
   font-weight: 600;
@@ -1647,7 +1650,7 @@ label {
   padding: 40px;
   background: var(--card-bg);
   border: 1px dashed var(--border);
-  border-radius: 8px;
+  border-radius: 0;
 }
 
 /* Modal */
@@ -1664,7 +1667,7 @@ label {
 
 .modal {
   background: var(--card-bg);
-  border-radius: 10px;
+  border-radius: 0;
   padding: 24px;
   width: 100%;
   max-width: 480px;
@@ -1707,14 +1710,14 @@ label {
   gap: 4px;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 0;
   padding: 8px;
   max-height: 70vh;
   overflow-y: auto;
 }
 
 .memo-list li {
-  border-radius: 6px;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -1800,7 +1803,7 @@ label {
   resize: vertical;
   padding: 16px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 0;
   background: var(--card-bg);
   font-size: 14px;
   line-height: 1.7;
