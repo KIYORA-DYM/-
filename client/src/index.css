@@ -3,22 +3,22 @@
   --text-muted: #6b7280;
   --bg: #ffffff;
   --card-bg: #ffffff;
-  --border: #e2e6f0;
-  --accent: #193ca3;
-  --accent-hover: #132e80;
-  --accent-soft: #e3e7f6;
+  --border: #dcdcdc;
+  --accent: #1a1a1a;
+  --accent-hover: #000000;
+  --accent-soft: #ececec;
   --ink: #111111;
   --navy: #0d1b3e;
   --danger: #b1483a;
-  --todo: #9c9384;
-  --doing: #c98a3e;
-  --done: #4c7a5e;
+  --todo: #a3a3a3;
+  --doing: #6b6b6b;
+  --done: #3d3d3d;
   --high: #b1483a;
-  --mid: #c98a3e;
-  --low: #85796a;
+  --mid: #8a8a8a;
+  --low: #b5b5b5;
   --radius: 0;
-  --shadow-sm: 0 1px 0 rgba(13, 27, 62, 0.12);
-  --shadow-md: 0 3px 10px rgba(13, 27, 62, 0.16);
+  --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 3px 10px rgba(0, 0, 0, 0.14);
 
   font: 15px/1.6 "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
   color: var(--text);
@@ -185,7 +185,7 @@ label {
 
 .pending-text {
   color: #4b4b4b;
-  background: #f5ecd9;
+  background: #ececec;
   border-radius: 0;
   padding: 10px 12px;
   font-size: 13px;
@@ -208,8 +208,8 @@ label {
 
 /* Announcement bar */
 .announcement-bar {
-  background: #f5ecd9;
-  border-bottom: 1px solid #e3cd9e;
+  background: #ececec;
+  border-bottom: 1px solid #dcdcdc;
   position: relative;
   z-index: 20;
 }
@@ -448,11 +448,11 @@ label {
 }
 
 .gantt-bar.status-client {
-  background: #7c6a9e;
+  background: #595959;
 }
 
 .gantt-bar.status-telapo {
-  background: #8b8172;
+  background: #8a8a8a;
 }
 
 .gantt-bar.status-resche {
@@ -460,11 +460,11 @@ label {
 }
 
 .gantt-bar.status-lost {
-  background: #a89c8a;
+  background: #525252;
 }
 
 .gantt-bar.status-longterm {
-  background: #4a7a8c;
+  background: #4d4d4d;
 }
 
 .gantt-bar.status-dealmade {
@@ -593,7 +593,7 @@ label {
 }
 
 .event-action {
-  background: #7c6a9e;
+  background: #595959;
 }
 
 .calendar-day-detail {
@@ -694,7 +694,7 @@ label {
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
   font-weight: 700;
-  border-left-color: var(--accent);
+  border-left-color: #193ca3;
   box-shadow: none;
 }
 
@@ -1035,7 +1035,8 @@ label {
 }
 
 .board-column {
-  background: #efe9dd;
+  background: #ececec;
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 12px;
 }
@@ -1234,8 +1235,8 @@ label {
 }
 
 .alert-upcoming {
-  background: #f5ecd9;
-  border-color: #e3cd9e;
+  background: #ececec;
+  border-color: #dcdcdc;
 }
 
 .alert-upcoming h2 {
@@ -1256,7 +1257,7 @@ label {
 }
 
 .follow-up-soon {
-  background: #f5ecd9;
+  background: #ececec;
   color: #4b4b4b;
 }
 
@@ -1581,11 +1582,11 @@ label {
 }
 
 .status-client {
-  background: #7c6a9e;
+  background: #595959;
 }
 
 .status-telapo {
-  background: #8b8172;
+  background: #8a8a8a;
 }
 
 .status-resche {
@@ -1593,11 +1594,11 @@ label {
 }
 
 .status-lost {
-  background: #a89c8a;
+  background: #525252;
 }
 
 .status-longterm {
-  background: #4a7a8c;
+  background: #4d4d4d;
 }
 
 .status-dealmade {
@@ -1610,8 +1611,8 @@ label {
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 0;
-  background: #e6ddf0;
-  color: #7c6a9e;
+  background: #e5e5e5;
+  color: #595959;
 }
 
 .priority-badge {
