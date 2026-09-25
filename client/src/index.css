@@ -1,23 +1,34 @@
 :root {
-  --text: #2b2d33;
-  --text-muted: #6b7280;
-  --bg: #f4f5f7;
-  --card-bg: #ffffff;
-  --border: #e2e4e9;
-  --accent: #3b6ee0;
-  --accent-hover: #2f58b8;
-  --danger: #d64545;
-  --todo: #9aa1ac;
-  --doing: #e0a13b;
-  --done: #3bb273;
-  --high: #d64545;
-  --mid: #e0a13b;
-  --low: #6b7280;
+  --text: #23201b;
+  --text-muted: #85796a;
+  --bg: #f6f2ea;
+  --card-bg: #fffdf9;
+  --border: #e6ddcd;
+  --accent: #9c4a30;
+  --accent-hover: #7e3b26;
+  --accent-soft: #f1e2da;
+  --ink: #1c1a17;
+  --danger: #b1483a;
+  --todo: #9c9384;
+  --doing: #c98a3e;
+  --done: #4c7a5e;
+  --high: #b1483a;
+  --mid: #c98a3e;
+  --low: #85796a;
+  --radius: 10px;
+  --shadow-sm: 0 1px 2px rgba(28, 26, 23, 0.06);
+  --shadow-md: 0 6px 20px rgba(28, 26, 23, 0.08);
 
-  font: 15px/1.5 system-ui, "Segoe UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  font: 15px/1.6 "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
+  letter-spacing: 0.01em;
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 * {
@@ -37,29 +48,41 @@ button {
   font: inherit;
   cursor: pointer;
   border: none;
-  border-radius: 6px;
+  border-radius: 7px;
   background: var(--accent);
-  color: #fff;
-  padding: 8px 16px;
+  color: #fff9f3;
+  padding: 9px 18px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 button:hover {
   background: var(--accent-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+button:active {
+  transform: translateY(1px);
 }
 
 button.secondary {
   background: transparent;
   color: var(--text);
   border: 1px solid var(--border);
+  font-weight: 500;
 }
 
 button.secondary:hover {
-  background: #f0f1f3;
+  background: var(--accent-soft);
+  border-color: var(--border);
+  box-shadow: none;
 }
 
 button:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
+  transform: none;
 }
 
 .link-button {
@@ -67,11 +90,13 @@ button:disabled {
   color: var(--accent);
   padding: 0;
   border-radius: 0;
+  font-weight: 500;
 }
 
 .link-button:hover {
   background: none;
   text-decoration: underline;
+  box-shadow: none;
 }
 
 .link-button.danger {
@@ -82,21 +107,32 @@ input,
 textarea,
 select {
   font: inherit;
-  padding: 8px 10px;
+  padding: 9px 12px;
   border: 1px solid var(--border);
-  border-radius: 6px;
-  background: #fff;
+  border-radius: 7px;
+  background: var(--card-bg);
   color: var(--text);
   width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 label {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 13px;
+  gap: 5px;
+  font-size: 12.5px;
+  font-weight: 500;
   color: var(--text-muted);
   margin-bottom: 12px;
+  letter-spacing: 0.02em;
 }
 
 /* Auth page */
@@ -106,6 +142,9 @@ label {
   align-items: center;
   justify-content: center;
   padding: 24px;
+  background:
+    radial-gradient(circle at 15% 15%, var(--accent-soft), transparent 45%),
+    var(--bg);
 }
 
 .auth-card {
@@ -113,20 +152,22 @@ label {
   max-width: 380px;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 32px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  padding: 36px;
+  box-shadow: var(--shadow-md);
 }
 
 .auth-card h1 {
   margin: 0 0 4px;
-  font-size: 22px;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--ink);
 }
 
 .auth-subtitle {
-  margin: 0 0 20px;
+  margin: 0 0 22px;
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 13.5px;
 }
 
 .auth-card button[type="submit"] {
@@ -142,8 +183,8 @@ label {
 }
 
 .pending-text {
-  color: #a4671a;
-  background: #fdf3e0;
+  color: #96662c;
+  background: #f5ecd9;
   border-radius: 6px;
   padding: 10px 12px;
   font-size: 13px;
@@ -166,8 +207,8 @@ label {
 
 /* Announcement bar */
 .announcement-bar {
-  background: #fff7e0;
-  border-bottom: 1px solid #eddca0;
+  background: #f5ecd9;
+  border-bottom: 1px solid #e3cd9e;
   position: relative;
   z-index: 20;
 }
@@ -209,7 +250,7 @@ label {
 }
 
 .announcement-summary.announcement-urgent {
-  background: #fdecec;
+  background: #f7e6e1;
 }
 
 .announcement-summary.announcement-urgent .announcement-latest-title {
@@ -240,14 +281,14 @@ label {
 .reminder-list li {
   font-size: 13px;
   color: var(--danger);
-  background: #fdecec;
+  background: #f7e6e1;
   padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
 }
 
 .announcement-panel {
-  background: #fff;
+  background: var(--card-bg);
   border-bottom: 1px solid var(--border);
   padding: 16px 20px;
   max-height: 320px;
@@ -406,11 +447,11 @@ label {
 }
 
 .gantt-bar.status-client {
-  background: #6f5bd0;
+  background: #7c6a9e;
 }
 
 .gantt-bar.status-telapo {
-  background: #6b7280;
+  background: #8b8172;
 }
 
 .gantt-bar.status-resche {
@@ -418,11 +459,11 @@ label {
 }
 
 .gantt-bar.status-lost {
-  background: #9ca3af;
+  background: #a89c8a;
 }
 
 .gantt-bar.status-longterm {
-  background: #3b82c4;
+  background: #4a7a8c;
 }
 
 .gantt-bar.status-dealmade {
@@ -440,7 +481,7 @@ label {
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  background: #f9fafb;
+  background: #f2ede2;
   border-bottom: 1px solid var(--border);
 }
 
@@ -485,11 +526,11 @@ label {
 }
 
 .calendar-cell:hover {
-  background: #f7f8fa;
+  background: #faf5ee;
 }
 
 .calendar-cell-empty {
-  background: #fafafa;
+  background: #f4efe4;
   cursor: default;
 }
 
@@ -499,11 +540,11 @@ label {
 }
 
 .calendar-today {
-  background: #eef2ff;
+  background: var(--accent-soft);
 }
 
 .calendar-today:hover {
-  background: #e4eaff;
+  background: #ecdccf;
 }
 
 .calendar-today .calendar-date {
@@ -551,7 +592,7 @@ label {
 }
 
 .event-action {
-  background: #6f5bd0;
+  background: #7c6a9e;
 }
 
 .calendar-day-detail {
@@ -600,26 +641,27 @@ label {
 }
 
 .sidebar {
-  width: 220px;
+  width: 224px;
   flex-shrink: 0;
-  background: #1f2430;
-  color: #cfd3dc;
-  padding: 20px 0;
+  background: var(--ink);
+  color: #cdc4b6;
+  padding: 24px 0;
   display: flex;
   flex-direction: column;
 }
 
 .sidebar-title {
-  font-weight: 700;
-  color: #fff;
-  padding: 0 20px 20px;
+  font-weight: 800;
+  color: #fbf8f2;
+  padding: 0 22px 24px;
   font-size: 16px;
+  letter-spacing: 0.03em;
 }
 
 .sidebar ul {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 10px;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -629,26 +671,36 @@ label {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
   background: none;
-  color: #cfd3dc;
-  border-radius: 0;
-  padding: 12px 20px;
+  color: #b5aa98;
+  border-radius: 8px;
+  padding: 11px 14px;
   text-align: left;
-  font-size: 14px;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .sidebar-item:hover {
   background: rgba(255, 255, 255, 0.06);
+  color: #fbf8f2;
 }
 
 .sidebar-item.active {
   background: var(--accent);
-  color: #fff;
+  color: #fff9f3;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.sidebar-item:hover:not(.active) {
+  box-shadow: none;
 }
 
 .sidebar-icon {
-  font-size: 16px;
+  font-size: 15px;
+  opacity: 0.9;
 }
 
 .app-main {
@@ -660,27 +712,30 @@ label {
 .view {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 28px 24px;
 }
 
 .view-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .view-header h1 {
-  font-size: 20px;
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--ink);
   margin: 0;
 }
 
 .card-panel {
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius);
   padding: 20px;
   margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
 }
 
 .card-panel h2 {
@@ -697,7 +752,7 @@ label {
 }
 
 .na-group.na-overdue {
-  background: #fdecec;
+  background: #f7e6e1;
   border-color: #f3c6c6;
 }
 
@@ -923,27 +978,27 @@ label {
 }
 
 .note-yellow {
-  background: #fff4b8;
+  background: #f3e3a8;
 }
 
 .note-pink {
-  background: #ffd6e8;
+  background: #ecc9c0;
 }
 
 .note-blue {
-  background: #cdeeff;
+  background: #bcd3d1;
 }
 
 .note-green {
-  background: #d6f5d0;
+  background: #c8d6b0;
 }
 
 .note-orange {
-  background: #ffe0b8;
+  background: #eecfa3;
 }
 
 .note-purple {
-  background: #e6d9ff;
+  background: #d2c3d9;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -976,8 +1031,8 @@ label {
 }
 
 .board-column {
-  background: #eef0f3;
-  border-radius: 8px;
+  background: #efe9dd;
+  border-radius: var(--radius);
   padding: 12px;
 }
 
@@ -990,7 +1045,7 @@ label {
 }
 
 .board-count {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 999px;
   padding: 1px 8px;
   font-size: 12px;
@@ -1085,21 +1140,25 @@ label {
 .summary-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  box-shadow: var(--shadow-sm);
 }
 
 .summary-label {
-  font-size: 12px;
+  font-size: 11.5px;
+  font-weight: 600;
   color: var(--text-muted);
+  letter-spacing: 0.03em;
 }
 
 .summary-value {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ink);
 }
 
 .follow-up-alerts {
@@ -1162,8 +1221,8 @@ label {
 }
 
 .alert-overdue {
-  background: #fdecec;
-  border-color: #f3c6c6;
+  background: #f7e6e1;
+  border-color: #e6c3b7;
 }
 
 .alert-overdue h2 {
@@ -1171,12 +1230,12 @@ label {
 }
 
 .alert-upcoming {
-  background: #fdf3e0;
-  border-color: #f0dba9;
+  background: #f5ecd9;
+  border-color: #e3cd9e;
 }
 
 .alert-upcoming h2 {
-  color: #a4671a;
+  color: #96662c;
 }
 
 .follow-up-badge {
@@ -1188,13 +1247,13 @@ label {
 }
 
 .follow-up-overdue {
-  background: #fdecec;
+  background: #f7e6e1;
   color: var(--danger);
 }
 
 .follow-up-soon {
-  background: #fdf3e0;
-  color: #a4671a;
+  background: #f5ecd9;
+  color: #96662c;
 }
 
 .task-company {
@@ -1406,7 +1465,7 @@ label {
 }
 
 .home-tab:hover {
-  background: #f0f1f3;
+  background: #efe8db;
   color: var(--text);
 }
 
@@ -1443,23 +1502,25 @@ label {
   border-collapse: collapse;
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .task-table th,
 .task-table td {
   text-align: left;
-  padding: 12px;
+  padding: 13px 14px;
   border-bottom: 1px solid var(--border);
-  font-size: 14px;
+  font-size: 13.5px;
 }
 
 .task-table th {
-  background: #f9fafb;
-  font-size: 12px;
-  color: var(--text-muted);
-  font-weight: 600;
+  background: var(--accent-soft);
+  font-size: 11.5px;
+  color: #6b4a3a;
+  font-weight: 700;
+  letter-spacing: 0.03em;
 }
 
 .task-table tr:last-child td {
@@ -1468,10 +1529,11 @@ label {
 
 .task-table tr.clickable-row {
   cursor: pointer;
+  transition: background 0.12s ease;
 }
 
 .task-table tr.clickable-row:hover {
-  background: #f7f8fa;
+  background: #faf5ee;
 }
 
 .task-table td.clickable-cell {
@@ -1515,11 +1577,11 @@ label {
 }
 
 .status-client {
-  background: #6f5bd0;
+  background: #7c6a9e;
 }
 
 .status-telapo {
-  background: #6b7280;
+  background: #8b8172;
 }
 
 .status-resche {
@@ -1527,11 +1589,11 @@ label {
 }
 
 .status-lost {
-  background: #9ca3af;
+  background: #a89c8a;
 }
 
 .status-longterm {
-  background: #3b82c4;
+  background: #4a7a8c;
 }
 
 .status-dealmade {
@@ -1544,8 +1606,8 @@ label {
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 4px;
-  background: #ece8fb;
-  color: #6f5bd0;
+  background: #e6ddf0;
+  color: #7c6a9e;
 }
 
 .priority-badge {
@@ -1656,7 +1718,7 @@ label {
 }
 
 .memo-list li.active {
-  background: var(--accent-bg, #eef2ff);
+  background: var(--accent-soft);
 }
 
 .memo-list-item {
@@ -1673,7 +1735,7 @@ label {
 }
 
 .memo-list-item:hover {
-  background: #f0f1f3;
+  background: #efe8db;
 }
 
 .memo-list li.active .memo-list-item {
