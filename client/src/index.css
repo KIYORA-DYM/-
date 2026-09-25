@@ -1695,60 +1695,151 @@ label {
   text-align: right;
 }
 
-.memo-layout {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 16px;
-  align-items: start;
+.memo-shell {
+  display: flex;
+  height: 78vh;
+  min-height: 480px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  overflow: hidden;
+}
+
+.memo-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.memo-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 10px;
+}
+
+.memo-sidebar-header h1 {
+  font-size: 19px;
+  margin: 0;
+}
+
+.memo-compose-btn {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 0;
+  border: none;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.memo-compose-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.memo-search-wrap {
+  padding: 0 16px 12px;
+}
+
+.memo-search {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  padding: 8px 12px;
+  font-size: 13px;
+  border-radius: 0;
+}
+
+.memo-search:focus {
+  outline: none;
+  border-color: var(--accent);
 }
 
 .memo-list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 4px 8px 8px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 0;
-  padding: 8px;
-  max-height: 70vh;
+  gap: 2px;
+  flex: 1;
   overflow-y: auto;
+  min-height: 0;
 }
 
 .memo-list li {
   border-radius: 0;
-  overflow: hidden;
 }
 
-.memo-list li.active {
+.memo-list li.active .memo-list-item {
   background: var(--accent-soft);
 }
 
 .memo-list-item {
   width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+  align-items: center;
+  gap: 10px;
   background: none;
   color: var(--text);
-  padding: 8px 10px;
+  padding: 9px 8px;
   border-radius: 0;
   text-align: left;
 }
 
 .memo-list-item:hover {
-  background: #efe8db;
+  background: #f2f2f2;
 }
 
-.memo-list li.active .memo-list-item {
-  background: none;
+.memo-list li.active .memo-list-item:hover {
+  background: var(--accent-soft);
+}
+
+.memo-avatar {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 0;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.memo-avatar-lg {
+  width: 42px;
+  height: 42px;
+  font-size: 16px;
+}
+
+.memo-avatar-xl {
+  width: 60px;
+  height: 60px;
+  font-size: 22px;
+}
+
+.memo-item-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .memo-list-title {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1757,7 +1848,7 @@ label {
 }
 
 .memo-list-preview {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1765,58 +1856,162 @@ label {
   width: 100%;
 }
 
-.memo-list-delete {
-  font-size: 11px;
-  padding: 0 10px 6px;
-}
-
-.memo-editor {
+.memo-main {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
-.memo-editor-header {
+.memo-main-header {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.memo-main-heading {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.memo-main-sub {
+  font-size: 11px;
+  color: var(--text-muted);
 }
 
 .memo-title-input {
   flex: 1;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   border: none;
-  border-bottom: 1px solid var(--border);
   border-radius: 0;
-  padding: 6px 2px;
+  padding: 2px 0;
   background: none;
+  color: var(--text);
 }
 
 .memo-title-input:focus {
   outline: none;
-  border-bottom-color: var(--accent);
 }
 
 .memo-textarea {
+  flex: 1;
+  min-height: 0;
   width: 100%;
-  min-height: 60vh;
-  resize: vertical;
-  padding: 16px;
-  border: 1px solid var(--border);
+  resize: none;
+  padding: 20px;
+  border: none;
   border-radius: 0;
   background: var(--card-bg);
   font-size: 14px;
-  line-height: 1.7;
+  line-height: 1.8;
   color: var(--text);
 }
 
-@media (max-width: 720px) {
-  .memo-layout {
-    grid-template-columns: 1fr;
+.memo-textarea:focus {
+  outline: none;
+}
+
+.memo-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 40px;
+  text-align: center;
+}
+
+.memo-info-panel {
+  width: 260px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--border);
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow-y: auto;
+}
+
+.memo-info-avatar-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.memo-info-avatar-block h2 {
+  font-size: 15px;
+  margin: 0;
+  word-break: break-word;
+}
+
+.memo-info-section h3 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+.memo-info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text);
+  padding: 6px 0;
+}
+
+.memo-info-icon {
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.memo-info-action {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 8px 0;
+  font-size: 12.5px;
+  color: var(--danger);
+  text-align: left;
+}
+
+.memo-info-action:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 980px) {
+  .memo-info-panel {
+    display: none;
   }
-  .memo-list {
-    max-height: 200px;
+}
+
+@media (max-width: 720px) {
+  .memo-shell {
+    flex-direction: column;
+    height: auto;
+  }
+  .memo-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    max-height: 260px;
+  }
+  .memo-main {
+    min-height: 50vh;
   }
 }
 
