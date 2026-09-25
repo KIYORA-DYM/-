@@ -511,6 +511,10 @@ label {
   background: var(--doing);
 }
 
+.event-action {
+  background: #6f5bd0;
+}
+
 @media (max-width: 720px) {
   .calendar-cell {
     min-height: 70px;
@@ -1292,6 +1296,10 @@ label {
 
 .action-add-form input[type="date"] {
   width: 150px;
+}
+
+.action-add-form input[type="time"] {
+  width: 110px;
 }
 
 @media (max-width: 640px) {

@@ -25,7 +25,10 @@ router.get("/", requireAuth, async (req, res) => {
     params.push(Number(completed));
   }
   if (due === "overdue") {
-    query += " AND a.due_date IS NOT NULL AND a.due_date <= date('now') AND a.completed = 0";
+    query += ` AND a.due_date IS NOT NULL AND a.completed = 0 AND (
+      a.due_date < date('now')
+      OR (a.due_date = date('now') AND (a.due_time IS NULL OR a.due_time <= time('now')))
+    )`;
   }
   query += " ORDER BY a.completed, a.due_date IS NULL, a.due_date";
 
@@ -64,14 +67,14 @@ router.post("/task/:taskId", requireAuth, async (req, res) => {
     return res.status(404).json({ error: "案件が見つかりません" });
   }
 
-  const { title, due_date = null } = req.body;
+  const { title, due_date = null, due_time = null } = req.body;
   if (!title) {
     return res.status(400).json({ error: "title は必須です" });
   }
 
   const result = await db.execute({
-    sql: "INSERT INTO actions (task_id, title, due_date) VALUES (?, ?, ?)",
-    args: [req.params.taskId, title, due_date],
+    sql: "INSERT INTO actions (task_id, title, due_date, due_time) VALUES (?, ?, ?, ?)",
+    args: [req.params.taskId, title, due_date, due_time],
   });
 
   const row = (
@@ -91,13 +94,14 @@ router.patch("/:id", requireAuth, async (req, res) => {
     return res.status(404).json({ error: "アクションが見つかりません" });
   }
 
-  const { title, due_date, completed } = req.body;
+  const { title, due_date, due_time, completed } = req.body;
 
   await db.execute({
-    sql: "UPDATE actions SET title = ?, due_date = ?, completed = ? WHERE id = ?",
+    sql: "UPDATE actions SET title = ?, due_date = ?, due_time = ?, completed = ? WHERE id = ?",
     args: [
       title ?? existing.title,
       due_date === undefined ? existing.due_date : due_date,
+      due_time === undefined ? existing.due_time : due_time,
       completed === undefined ? existing.completed : completed ? 1 : 0,
       req.params.id,
     ],

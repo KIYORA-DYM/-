@@ -7,6 +7,7 @@ export function NextActionChecklist({ taskId }) {
   const [actions, setActions] = useState([]);
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [dueTime, setDueTime] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -30,9 +31,14 @@ export function NextActionChecklist({ taskId }) {
     e.preventDefault();
     if (!title.trim()) return;
     try {
-      await api.createAction(token, taskId, { title, due_date: dueDate || null });
+      await api.createAction(token, taskId, {
+        title,
+        due_date: dueDate || null,
+        due_time: dueDate ? dueTime || null : null,
+      });
       setTitle("");
       setDueDate("");
+      setDueTime("");
       await load();
     } catch (err) {
       setError(err.message);
@@ -77,7 +83,12 @@ export function NextActionChecklist({ taskId }) {
                 />
                 <span className="action-title">{a.title}</span>
               </label>
-              {a.due_date && <span className="action-due">期限 {a.due_date}</span>}
+              {a.due_date && (
+                <span className="action-due">
+                  期限 {a.due_date}
+                  {a.due_time ? ` ${a.due_time}まで` : ""}
+                </span>
+              )}
               <button
                 type="button"
                 className="link-button danger"
@@ -96,7 +107,21 @@ export function NextActionChecklist({ taskId }) {
           onChange={(e) => setTitle(e.target.value)}
           placeholder="次にやること(例: 見積書を送付する)"
         />
-        <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+        <input
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+          onClick={(e) => e.target.showPicker?.()}
+        />
+        {dueDate && (
+          <input
+            type="time"
+            value={dueTime}
+            onChange={(e) => setDueTime(e.target.value)}
+            onClick={(e) => e.target.showPicker?.()}
+            placeholder="何時まで"
+          />
+        )}
         <button type="submit">追加</button>
       </form>
     </div>

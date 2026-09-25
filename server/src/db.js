@@ -52,6 +52,7 @@ export async function migrate() {
       task_id INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
       title TEXT NOT NULL,
       due_date TEXT,
+      due_time TEXT,
       completed INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     )
@@ -133,6 +134,11 @@ export async function migrate() {
   const taskColumns = (await db.execute("PRAGMA table_info(tasks)")).rows.map((r) => r.name);
   if (!taskColumns.includes("website")) {
     await db.execute("ALTER TABLE tasks ADD COLUMN website TEXT DEFAULT ''");
+  }
+
+  const actionColumns = (await db.execute("PRAGMA table_info(actions)")).rows.map((r) => r.name);
+  if (!actionColumns.includes("due_time")) {
+    await db.execute("ALTER TABLE actions ADD COLUMN due_time TEXT");
   }
 }
 

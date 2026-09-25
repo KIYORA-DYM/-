@@ -15,7 +15,8 @@ function toDateStr(year, month, day) {
 
 export function CalendarView() {
   const { token } = useAuth();
-  const [tasks, setTasks] = useState([]);
+  const [allTasks, setAllTasks] = useState([]);
+  const [actions, setActions] = useState([]);
   const [cursor, setCursor] = useState(() => {
     const now = new Date();
     return { year: now.getFullYear(), month: now.getMonth() };
@@ -29,8 +30,12 @@ export function CalendarView() {
     setLoading(true);
     setError("");
     try {
-      const data = await api.getTasks(token);
-      setTasks(data.filter((t) => t.status !== "既存企業"));
+      const [taskData, actionData] = await Promise.all([
+        api.getTasks(token),
+        api.getAllActions(token, { completed: "0" }),
+      ]);
+      setAllTasks(taskData);
+      setActions(actionData);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -43,18 +48,27 @@ export function CalendarView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // 期限・フォロー予定日は営業パイプラインの案件のみ、ネクストアクションは
+  // 既存企業も含めた全案件から拾う。
+  const tasks = useMemo(() => allTasks.filter((t) => t.status !== "既存企業"), [allTasks]);
+
   const eventsByDate = useMemo(() => {
     const map = {};
     for (const t of tasks) {
       if (t.due_date) {
-        (map[t.due_date] ||= []).push({ task: t, kind: "due" });
+        (map[t.due_date] ||= []).push({ key: `task-due-${t.id}`, kind: "due", task: t });
       }
       if (t.next_follow_up_date && t.next_follow_up_date !== t.due_date) {
-        (map[t.next_follow_up_date] ||= []).push({ task: t, kind: "follow" });
+        (map[t.next_follow_up_date] ||= []).push({ key: `task-follow-${t.id}`, kind: "follow", task: t });
+      }
+    }
+    for (const a of actions) {
+      if (a.due_date) {
+        (map[a.due_date] ||= []).push({ key: `action-${a.id}`, kind: "action", action: a });
       }
     }
     return map;
-  }, [tasks]);
+  }, [tasks, actions]);
 
   const todayStr = new Date().toISOString().slice(0, 10);
 
@@ -78,6 +92,14 @@ export function CalendarView() {
       const d = new Date(prev.year, prev.month + delta, 1);
       return { year: d.getFullYear(), month: d.getMonth() };
     });
+  }
+
+  function openTaskById(taskId) {
+    const task = allTasks.find((t) => t.id === taskId);
+    if (task) {
+      setEditingTask(task);
+      setShowForm(true);
+    }
   }
 
   async function handleUpdate(taskInput) {
@@ -128,19 +150,35 @@ export function CalendarView() {
                 >
                   <div className="calendar-date">{cell.day}</div>
                   <div className="calendar-events">
-                    {cell.events.map(({ task, kind }) => (
-                      <div
-                        key={`${task.id}-${kind}`}
-                        className={`calendar-event ${kind === "due" ? "event-due" : "event-follow"}`}
-                        onClick={() => {
-                          setEditingTask(task);
-                          setShowForm(true);
-                        }}
-                        title={task.title}
-                      >
-                        {kind === "due" ? "期限" : "フォロー"}: {task.company_name || task.title}
-                      </div>
-                    ))}
+                    {cell.events.map((ev) => {
+                      if (ev.kind === "action") {
+                        const a = ev.action;
+                        return (
+                          <div
+                            key={ev.key}
+                            className="calendar-event event-action"
+                            onClick={() => openTaskById(a.task_id)}
+                            title={a.title}
+                          >
+                            NA{a.due_time ? `(${a.due_time})` : ""}: {a.company_name || a.task_title}
+                          </div>
+                        );
+                      }
+                      const t = ev.task;
+                      return (
+                        <div
+                          key={ev.key}
+                          className={`calendar-event ${ev.kind === "due" ? "event-due" : "event-follow"}`}
+                          onClick={() => {
+                            setEditingTask(t);
+                            setShowForm(true);
+                          }}
+                          title={t.title}
+                        >
+                          {ev.kind === "due" ? "期限" : "フォロー"}: {t.company_name || t.title}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               ) : (
@@ -154,6 +192,7 @@ export function CalendarView() {
       {showForm && (
         <TaskEditModal
           task={editingTask}
+          statusOptions={editingTask?.status === "既存企業" ? ["既存企業"] : undefined}
           onSubmit={handleUpdate}
           onCancel={() => {
             setShowForm(false);

@@ -66,14 +66,15 @@ export function NextActionsView() {
   }
 
   const today = todayStr();
-  const byDueDate = (a, b) => (a.due_date || "9999-99-99").localeCompare(b.due_date || "9999-99-99");
+  const now = new Date().toTimeString().slice(0, 5);
+  const byDueDate = (a, b) =>
+    (a.due_date || "9999-99-99").localeCompare(b.due_date || "9999-99-99") ||
+    (a.due_time || "99:99").localeCompare(b.due_time || "99:99");
+  const isOverdue = (a) =>
+    !!a.due_date && (a.due_date < today || (a.due_date === today && (!a.due_time || a.due_time <= now)));
 
-  const overdue = actions
-    .filter((a) => !a.completed && a.due_date && a.due_date < today)
-    .sort(byDueDate);
-  const pending = actions
-    .filter((a) => !a.completed && (!a.due_date || a.due_date >= today))
-    .sort(byDueDate);
+  const overdue = actions.filter((a) => !a.completed && isOverdue(a)).sort(byDueDate);
+  const pending = actions.filter((a) => !a.completed && !isOverdue(a)).sort(byDueDate);
   const done = actions.filter((a) => a.completed).sort((a, b) => b.due_date?.localeCompare(a.due_date || "") || 0);
 
   function renderGroup(title, items, className) {
@@ -93,7 +94,9 @@ export function NextActionsView() {
                 <span className="na-company">{a.company_name || a.task_title}</span>
                 <span className="na-title">{a.title}</span>
               </div>
-              <span className="na-due">{a.due_date || "期限なし"}</span>
+              <span className="na-due">
+                {a.due_date ? `${a.due_date}${a.due_time ? ` ${a.due_time}` : ""}` : "期限なし"}
+              </span>
             </li>
           ))}
         </ul>

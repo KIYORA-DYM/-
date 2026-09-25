@@ -55,9 +55,12 @@ router.get("/", requireAuth, async (req, res) => {
               JOIN tasks t ON t.id = a.task_id
               WHERE t.created_by = ?
                 AND a.due_date IS NOT NULL
-                AND a.due_date <= date('now')
                 AND a.completed = 0
-              ORDER BY a.due_date`,
+                AND (
+                  a.due_date < date('now')
+                  OR (a.due_date = date('now') AND (a.due_time IS NULL OR a.due_time <= time('now')))
+                )
+              ORDER BY a.due_date, a.due_time`,
         args: [userId],
       },
       {
