@@ -1136,51 +1136,37 @@ label {
   cursor: pointer;
 }
 
-.wizard-steps {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+.quick-add-form label {
+  margin-bottom: 14px;
 }
 
-.wizard-step-indicator {
-  font-size: 12px;
+.quick-add-more {
+  margin: 8px 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.quick-add-more summary {
+  cursor: pointer;
+  font-size: 13px;
   color: var(--text-muted);
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: #f0f1f3;
-}
-
-.wizard-step-indicator.active {
-  background: var(--accent);
-  color: #fff;
   font-weight: 600;
 }
 
-.wizard-step-indicator.done {
-  background: #e4ece1;
-  color: var(--done);
+.quick-add-more[open] summary {
+  margin-bottom: 12px;
 }
 
-.wizard-panel {
-  min-height: 180px;
+.quick-add-more .form-row,
+.quick-add-more label {
+  margin-top: 12px;
+  margin-bottom: 0;
 }
 
-.wizard-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.wizard-actions-left,
-.wizard-actions-right {
-  display: flex;
-  gap: 8px;
+.quick-add-more label:first-of-type,
+.quick-add-more .form-row:first-of-type {
+  margin-top: 12px;
 }
 
 .next-actions,

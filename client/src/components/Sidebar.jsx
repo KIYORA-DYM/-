@@ -2,7 +2,7 @@ const NAV_ITEMS = [
   { key: "home", label: "ホーム", icon: "🏠" },
   { key: "actions", label: "ネクストアクション", icon: "🎯" },
   { key: "todo", label: "ToDoリスト", icon: "✅" },
-  { key: "add", label: "課題の追加", icon: "➕" },
+  { key: "add", label: "タスクの追加", icon: "➕" },
   { key: "board", label: "ボード", icon: "📋" },
   { key: "gantt", label: "ガントチャート", icon: "📅" },
   { key: "calendar", label: "カレンダー", icon: "🗓" },

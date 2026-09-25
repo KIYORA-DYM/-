@@ -19,7 +19,7 @@ export function AddIssueView({ onNavigate }) {
   return (
     <div className="view">
       <header className="view-header">
-        <h1>課題の追加</h1>
+        <h1>タスクの追加</h1>
       </header>
 
       {error && <p className="error-text">{error}</p>}
