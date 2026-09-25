@@ -11,6 +11,7 @@ const STEPS = [
 
 const initialForm = {
   company_name: "",
+  website: "",
   phone: "",
   title: "",
   status: "テレアポ",
@@ -34,6 +35,7 @@ export function QuickAddWizard({ onSubmit, onCancel }) {
     return {
       title: form.title.trim() || form.company_name,
       company_name: form.company_name,
+      website: form.website,
       phone: form.phone,
       status: form.status,
       priority: form.priority,
@@ -109,14 +111,16 @@ export function QuickAddWizard({ onSubmit, onCancel }) {
 
       {step === 1 && (
         <div className="wizard-panel">
-          <label>
-            案件名(空欄なら会社名を使用)
-            <input
-              value={form.title}
-              onChange={(e) => handleChange("title", e.target.value)}
-              placeholder={form.company_name || "案件名"}
-            />
-          </label>
+          {form.status !== "テレアポ" && (
+            <label>
+              案件名(空欄なら会社名を使用)
+              <input
+                value={form.title}
+                onChange={(e) => handleChange("title", e.target.value)}
+                placeholder={form.company_name || "案件名"}
+              />
+            </label>
+          )}
           <div className="form-row">
             <label>
               ステータス
@@ -144,6 +148,15 @@ export function QuickAddWizard({ onSubmit, onCancel }) {
 
       {step === 2 && (
         <div className="wizard-panel">
+          <label>
+            企業URL
+            <input
+              type="url"
+              value={form.website}
+              onChange={(e) => handleChange("website", e.target.value)}
+              placeholder="https://example.com"
+            />
+          </label>
           <label>
             先方担当者
             <input

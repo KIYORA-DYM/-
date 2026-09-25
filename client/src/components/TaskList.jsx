@@ -43,7 +43,18 @@ export function TaskList({ tasks, onEdit, onDelete, onStatusChange }) {
           <tr key={task.id}>
             <td className="clickable-cell" onClick={() => onEdit(task)}>
               {task.company_name && <div className="task-company">{task.company_name}</div>}
-              <div className="task-title">{task.title}</div>
+              {task.title !== task.company_name && <div className="task-title">{task.title}</div>}
+              {task.website && (
+                <a
+                  href={task.website}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="task-desc"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {task.website}
+                </a>
+              )}
               {task.contact_name && <div className="task-desc">担当: {task.contact_name}</div>}
               {task.description && <div className="task-desc">{task.description}</div>}
             </td>

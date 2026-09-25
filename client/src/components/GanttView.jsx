@@ -83,8 +83,6 @@ export function GanttView() {
   async function handleUpdate(taskInput) {
     try {
       await api.updateTask(token, editingTask.id, taskInput);
-      setShowForm(false);
-      setEditingTask(null);
       await loadData();
     } catch (err) {
       setError(err.message);
@@ -151,7 +149,7 @@ export function GanttView() {
                     }}
                   >
                     {task.company_name && <span className="gantt-company">{task.company_name}</span>}
-                    <span>{task.title}</span>
+                    {task.title !== task.company_name && <span>{task.title}</span>}
                   </div>
                   <div
                     className="gantt-row-track"

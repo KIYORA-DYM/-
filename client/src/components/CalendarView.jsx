@@ -83,8 +83,6 @@ export function CalendarView() {
   async function handleUpdate(taskInput) {
     try {
       await api.updateTask(token, editingTask.id, taskInput);
-      setShowForm(false);
-      setEditingTask(null);
       await loadData();
     } catch (err) {
       setError(err.message);

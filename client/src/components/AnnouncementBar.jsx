@@ -89,8 +89,6 @@ export function AnnouncementBar({ summary, onRefresh }) {
   async function handleUpdate(taskInput) {
     try {
       await api.updateTask(token, editingTask.id, taskInput);
-      setShowForm(false);
-      setEditingTask(null);
       await onRefresh();
     } catch (err) {
       setError(err.message);

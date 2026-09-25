@@ -35,8 +35,6 @@ export function BoardView() {
   async function handleUpdate(taskInput) {
     try {
       await api.updateTask(token, editingTask.id, taskInput);
-      setShowForm(false);
-      setEditingTask(null);
       await loadData();
     } catch (err) {
       setError(err.message);
@@ -85,7 +83,7 @@ export function BoardView() {
                       }}
                     >
                       {task.company_name && <div className="task-company">{task.company_name}</div>}
-                      <div className="task-title">{task.title}</div>
+                      {task.title !== task.company_name && <div className="task-title">{task.title}</div>}
                       <div className="board-card-footer">
                         <span className={`priority-badge ${PRIORITY_CLASS[task.priority]}`}>
                           {task.priority}

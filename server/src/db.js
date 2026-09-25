@@ -31,6 +31,7 @@ export async function migrate() {
       due_date TEXT,
       start_date TEXT,
       company_name TEXT DEFAULT '',
+      website TEXT DEFAULT '',
       ceo_name TEXT DEFAULT '',
       contact_name TEXT DEFAULT '',
       contact_title TEXT DEFAULT '',
@@ -127,6 +128,11 @@ export async function migrate() {
     if (fkIssues.length > 0) {
       throw new Error(`users migration left dangling foreign keys: ${JSON.stringify(fkIssues)}`);
     }
+  }
+
+  const taskColumns = (await db.execute("PRAGMA table_info(tasks)")).rows.map((r) => r.name);
+  if (!taskColumns.includes("website")) {
+    await db.execute("ALTER TABLE tasks ADD COLUMN website TEXT DEFAULT ''");
   }
 }
 

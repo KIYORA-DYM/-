@@ -10,6 +10,7 @@ export function TodoView() {
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showDone, setShowDone] = useState(false);
 
   async function loadData() {
     setLoading(true);
@@ -60,7 +61,6 @@ export function TodoView() {
 
   const activeTodos = todos.filter((t) => !t.completed);
   const doneTodos = todos.filter((t) => t.completed);
-  const ordered = [...activeTodos, ...doneTodos];
 
   return (
     <div className="view">
@@ -85,30 +85,65 @@ export function TodoView() {
       ) : todos.length === 0 ? (
         <p className="empty-state">ToDoはまだありません。</p>
       ) : (
-        <div className="note-board">
-          {ordered.map((todo, i) => (
-            <div
-              key={todo.id}
-              className={`sticky-note ${NOTE_COLORS[i % NOTE_COLORS.length]} ${
-                todo.completed ? "note-done" : ""
-              }`}
-              onClick={() => handleToggle(todo)}
-            >
+        <>
+          {activeTodos.length === 0 ? (
+            <p className="empty-state">未完了のToDoはありません。</p>
+          ) : (
+            <div className="note-board">
+              {activeTodos.map((todo, i) => (
+                <div
+                  key={todo.id}
+                  className={`sticky-note ${NOTE_COLORS[i % NOTE_COLORS.length]}`}
+                  onClick={() => handleToggle(todo)}
+                >
+                  <button
+                    type="button"
+                    className="note-delete"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(todo);
+                    }}
+                    aria-label="削除"
+                  >
+                    ×
+                  </button>
+                  <p className="note-text">{todo.title}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {doneTodos.length > 0 && (
+            <div className="todo-done-section">
               <button
                 type="button"
-                className="note-delete"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(todo);
-                }}
-                aria-label="削除"
+                className="todo-done-toggle"
+                onClick={() => setShowDone((v) => !v)}
               >
-                ×
+                {showDone ? "▲" : "▼"} 完了済み({doneTodos.length}件)
               </button>
-              <p className="note-text">{todo.title}</p>
+              {showDone && (
+                <ul className="todo-done-list">
+                  {doneTodos.map((todo) => (
+                    <li key={todo.id}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked
+                          onChange={() => handleToggle(todo)}
+                        />
+                        <span>{todo.title}</span>
+                      </label>
+                      <button className="link-button danger" onClick={() => handleDelete(todo)}>
+                        削除
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );

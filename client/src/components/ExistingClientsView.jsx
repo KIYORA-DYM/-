@@ -37,8 +37,6 @@ export function ExistingClientsView() {
   async function handleUpdate(taskInput) {
     try {
       await api.updateTask(token, editingTask.id, taskInput);
-      setShowForm(false);
-      setEditingTask(null);
       await loadData();
     } catch (err) {
       setError(err.message);
@@ -96,6 +94,17 @@ export function ExistingClientsView() {
                 >
                   <td>
                     <div className="task-title">{c.company_name || c.title}</div>
+                    {c.website && (
+                      <a
+                        href={c.website}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="task-desc"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {c.website}
+                      </a>
+                    )}
                   </td>
                   <td>{c.ceo_name || <span className="muted">-</span>}</td>
                   <td>

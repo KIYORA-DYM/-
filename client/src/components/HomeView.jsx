@@ -50,8 +50,6 @@ export function HomeView({ onNavigate, summary, onMutate }) {
   async function handleUpdate(taskInput) {
     try {
       await api.updateTask(token, editingTask.id, taskInput);
-      setShowForm(false);
-      setEditingTask(null);
       await Promise.all([loadData(), onMutate?.()]);
     } catch (err) {
       setError(err.message);
@@ -122,7 +120,7 @@ export function HomeView({ onNavigate, summary, onMutate }) {
                   <li key={t.id} onClick={() => openTask(t)}>
                     <span className="follow-up-date">{t.next_follow_up_date}</span>
                     <span className="follow-up-company">{t.company_name || t.title}</span>
-                    <span className="follow-up-title">{t.title}</span>
+                    {t.title !== t.company_name && <span className="follow-up-title">{t.title}</span>}
                   </li>
                 ))}
               </ul>
@@ -136,7 +134,7 @@ export function HomeView({ onNavigate, summary, onMutate }) {
                   <li key={t.id} onClick={() => openTask(t)}>
                     <span className="follow-up-date">{t.next_follow_up_date}</span>
                     <span className="follow-up-company">{t.company_name || t.title}</span>
-                    <span className="follow-up-title">{t.title}</span>
+                    {t.title !== t.company_name && <span className="follow-up-title">{t.title}</span>}
                   </li>
                 ))}
               </ul>

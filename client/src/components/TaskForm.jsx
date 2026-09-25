@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NextActionChecklist } from "./NextActionChecklist";
 import { MeetingMinutes } from "./MeetingMinutes";
 import { contractMonthsElapsed } from "../utils/contract";
@@ -14,6 +14,7 @@ const emptyTask = {
   start_date: "",
   due_date: "",
   company_name: "",
+  website: "",
   ceo_name: "",
   contact_name: "",
   contact_title: "",
@@ -23,6 +24,8 @@ const emptyTask = {
   contract_month: "",
 };
 
+const AUTOSAVE_DELAY = 800;
+
 export function TaskForm({
   initialTask,
   statusOptions = DEFAULT_STATUS_OPTIONS,
@@ -30,10 +33,15 @@ export function TaskForm({
   onSubmit,
   onCancel,
 }) {
+  const isEditMode = !!initialTask;
   const [task, setTask] = useState(initialTask || { ...emptyTask, status: defaultStatus });
+  const [saveState, setSaveState] = useState(""); // "" | "saving" | "saved"
+  const skipNextAutosave = useRef(true);
+  const saveTimer = useRef(null);
 
   useEffect(() => {
     setTask(initialTask || { ...emptyTask, status: defaultStatus });
+    skipNextAutosave.current = true;
   }, [initialTask, defaultStatus]);
 
   function handleChange(field, value) {
@@ -41,25 +49,60 @@ export function TaskForm({
   }
 
   const isExistingClient = task.status === "既存企業";
+  // テレアポ段階ではまだ案件と呼べるものがなく、会社名がそのままタイトルに
+  // なる。既存企業も同様に会社名で管理するため、この2ステータスだけ
+  // タイトル欄を隠して自動で会社名を使う。
+  const usesCompanyNameAsTitle = (status) => status === "既存企業" || status === "テレアポ";
+  const hideTitleField = usesCompanyNameAsTitle(task.status);
+
+  function buildPayload(current) {
+    return {
+      ...current,
+      title: usesCompanyNameAsTitle(current.status) ? current.company_name || current.title : current.title,
+      start_date: current.start_date || null,
+      due_date: current.due_date || null,
+      next_follow_up_date: current.next_follow_up_date || null,
+      contract_month: current.contract_month || null,
+    };
+  }
+
+  // Edit mode has no save button — changes are pushed automatically a beat
+  // after the person stops typing/selecting, so switching fields or closing
+  // the modal never loses anything.
+  useEffect(() => {
+    if (!isEditMode) return;
+    if (skipNextAutosave.current) {
+      skipNextAutosave.current = false;
+      return;
+    }
+    setSaveState("saving");
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(async () => {
+      await onSubmit(buildPayload(task));
+      setSaveState("saved");
+    }, AUTOSAVE_DELAY);
+    return () => clearTimeout(saveTimer.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task]);
 
   function handleSubmit(e) {
     e.preventDefault();
-    onSubmit({
-      ...task,
-      title: isExistingClient ? task.company_name || task.title : task.title,
-      start_date: task.start_date || null,
-      due_date: task.due_date || null,
-      next_follow_up_date: task.next_follow_up_date || null,
-      contract_month: task.contract_month || null,
-    });
+    onSubmit(buildPayload(task));
   }
 
   return (
     <div>
     <form className="task-form" onSubmit={handleSubmit}>
-      <h2>{initialTask ? "編集" : isExistingClient ? "既存企業を追加" : "新しい案件を追加"}</h2>
+      <div className="task-form-header">
+        <h2>{isEditMode ? "編集" : isExistingClient ? "既存企業を追加" : "新しい案件を追加"}</h2>
+        {isEditMode && (
+          <span className={`save-indicator ${saveState}`}>
+            {saveState === "saving" ? "保存中…" : saveState === "saved" ? "保存済み" : ""}
+          </span>
+        )}
+      </div>
 
-      {!isExistingClient && (
+      {!hideTitleField && (
         <label>
           タイトル
           <input
@@ -77,20 +120,30 @@ export function TaskForm({
             value={task.company_name || ""}
             onChange={(e) => handleChange("company_name", e.target.value)}
             placeholder="株式会社〇〇"
-            required={isExistingClient}
+            required={hideTitleField}
           />
         </label>
-        {isExistingClient && (
-          <label>
-            社長名
-            <input
-              value={task.ceo_name || ""}
-              onChange={(e) => handleChange("ceo_name", e.target.value)}
-              placeholder="代表 山田太郎"
-            />
-          </label>
-        )}
+        <label>
+          企業URL
+          <input
+            type="url"
+            value={task.website || ""}
+            onChange={(e) => handleChange("website", e.target.value)}
+            placeholder="https://example.com"
+          />
+        </label>
       </div>
+
+      {isExistingClient && (
+        <label>
+          社長名
+          <input
+            value={task.ceo_name || ""}
+            onChange={(e) => handleChange("ceo_name", e.target.value)}
+            placeholder="代表 山田太郎"
+          />
+        </label>
+      )}
 
       <div className="form-row">
         <label>
@@ -221,9 +274,9 @@ export function TaskForm({
       </div>
 
       <div className="form-actions">
-        <button type="submit">保存</button>
+        {!isEditMode && <button type="submit">保存</button>}
         <button type="button" className="secondary" onClick={onCancel}>
-          キャンセル
+          {isEditMode ? "閉じる" : "キャンセル"}
         </button>
       </div>
     </form>

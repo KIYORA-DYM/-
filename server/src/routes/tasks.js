@@ -69,6 +69,7 @@ router.post("/", requireAuth, async (req, res) => {
     due_date = null,
     start_date = null,
     company_name = "",
+    website = "",
     ceo_name = "",
     contact_name = "",
     contact_title = "",
@@ -79,8 +80,8 @@ router.post("/", requireAuth, async (req, res) => {
     assignee_id = null,
   } = req.body;
 
-  if (!title) {
-    return res.status(400).json({ error: "title は必須です" });
+  if (!title && !company_name) {
+    return res.status(400).json({ error: "title か company_name のいずれかは必須です" });
   }
   if (!STATUSES.includes(status)) {
     return res.status(400).json({ error: `status は ${STATUSES.join(", ")} のいずれかです` });
@@ -90,16 +91,17 @@ router.post("/", requireAuth, async (req, res) => {
   }
 
   const result = await db.execute({
-    sql: `INSERT INTO tasks (title, description, status, priority, due_date, start_date, company_name, ceo_name, contact_name, contact_title, contact_email, phone, next_follow_up_date, contract_month, assignee_id, created_by)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    sql: `INSERT INTO tasks (title, description, status, priority, due_date, start_date, company_name, website, ceo_name, contact_name, contact_title, contact_email, phone, next_follow_up_date, contract_month, assignee_id, created_by)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     args: [
-      title,
+      title || company_name,
       description,
       status,
       priority,
       due_date,
       start_date,
       company_name,
+      website,
       ceo_name,
       contact_name,
       contact_title,
@@ -129,6 +131,7 @@ router.patch("/:id", requireAuth, async (req, res) => {
     due_date,
     start_date,
     company_name,
+    website,
     ceo_name,
     contact_name,
     contact_title,
@@ -149,7 +152,7 @@ router.patch("/:id", requireAuth, async (req, res) => {
   await db.execute({
     sql: `UPDATE tasks SET
             title = ?, description = ?, status = ?, priority = ?, due_date = ?, start_date = ?,
-            company_name = ?, ceo_name = ?, contact_name = ?, contact_title = ?, contact_email = ?, phone = ?,
+            company_name = ?, website = ?, ceo_name = ?, contact_name = ?, contact_title = ?, contact_email = ?, phone = ?,
             next_follow_up_date = ?, contract_month = ?, assignee_id = ?,
             updated_at = datetime('now')
           WHERE id = ?`,
@@ -161,6 +164,7 @@ router.patch("/:id", requireAuth, async (req, res) => {
       due_date === undefined ? existing.due_date : due_date,
       start_date === undefined ? existing.start_date : start_date,
       company_name ?? existing.company_name,
+      website ?? existing.website,
       ceo_name ?? existing.ceo_name,
       contact_name ?? existing.contact_name,
       contact_title ?? existing.contact_title,

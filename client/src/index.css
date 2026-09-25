@@ -639,6 +639,64 @@ label {
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 20px;
   padding: 4px;
+  margin-bottom: 24px;
+}
+
+.todo-done-section {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.todo-done-toggle {
+  background: none;
+  color: var(--text-muted);
+  padding: 4px 0;
+  border-radius: 0;
+  font-size: 13px;
+}
+
+.todo-done-toggle:hover {
+  background: none;
+  color: var(--text);
+}
+
+.todo-done-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.todo-done-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.todo-done-list li:last-child {
+  border-bottom: none;
+}
+
+.todo-done-list label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 13px;
+  flex: 1;
+}
+
+.todo-done-list input[type="checkbox"] {
+  width: auto;
+}
+
+.todo-done-list span {
+  text-decoration: line-through;
+  color: var(--text-muted);
 }
 
 .sticky-note {
@@ -1353,8 +1411,30 @@ label {
 }
 
 .task-form h2 {
-  margin: 0 0 16px;
+  margin: 0;
   font-size: 18px;
+}
+
+.task-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.save-indicator {
+  font-size: 12px;
+  color: var(--text-muted);
+  min-width: 60px;
+  text-align: right;
+}
+
+.save-indicator.saving {
+  color: var(--doing);
+}
+
+.save-indicator.saved {
+  color: var(--done);
 }
 
 .form-row {
