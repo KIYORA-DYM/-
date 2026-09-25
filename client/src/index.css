@@ -1,13 +1,14 @@
 :root {
-  --text: #23201b;
-  --text-muted: #85796a;
-  --bg: #f6f2ea;
-  --card-bg: #fffdf9;
-  --border: #e6ddcd;
+  --text: #193ca3;
+  --text-muted: #5b6d99;
+  --bg: #ffffff;
+  --card-bg: #ffffff;
+  --border: #e2e6f0;
   --accent: #193ca3;
   --accent-hover: #132e80;
   --accent-soft: #e3e7f6;
   --ink: #1c1a17;
+  --navy: #0d1b3e;
   --danger: #b1483a;
   --todo: #9c9384;
   --doing: #c98a3e;
@@ -643,7 +644,7 @@ label {
 .sidebar {
   width: 224px;
   flex-shrink: 0;
-  background: var(--ink);
+  background: var(--navy);
   color: #cdc4b6;
   padding: 24px 0;
   display: flex;

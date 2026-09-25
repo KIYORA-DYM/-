@@ -104,7 +104,7 @@ export function HomeView({ onNavigate, summary, onMutate }) {
   }
 
   return (
-    <div className="view">
+    <div className="view view-wide">
       <header className="view-header">
         <h1>ホーム</h1>
         <button onClick={() => onNavigate("add")}>+ 新しい案件</button>
@@ -153,7 +153,7 @@ export function HomeView({ onNavigate, summary, onMutate }) {
             <div className="alert-card alert-upcoming">
               <h2>今週フォロー予定({upcomingFollowUps.length}件)</h2>
               <ul>
-                {upcomingFollowUps.map((t) => (
+                {upcomingFollowUps.slice(0, 5).map((t) => (
                   <li key={t.id} onClick={() => openTask(t)}>
                     <span className="follow-up-date">{t.next_follow_up_date}</span>
                     <span className="follow-up-company">{t.company_name || t.title}</span>
