@@ -1220,6 +1220,10 @@ label {
   }
 }
 
+.existing-client-actions {
+  margin-bottom: 20px;
+}
+
 .toolbar {
   display: flex;
   justify-content: space-between;

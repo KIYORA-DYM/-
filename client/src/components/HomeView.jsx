@@ -15,6 +15,7 @@ export function HomeView({ onNavigate, summary, onMutate }) {
 
   const overdueFollowUps = (summary?.overdueFollowUps || []).filter((t) => t.status !== "既存企業");
   const upcomingFollowUps = (summary?.upcomingFollowUps || []).filter((t) => t.status !== "既存企業");
+  const existingClientActions = (summary?.overdueActions || []).filter((a) => a.task_status === "既存企業");
 
   async function loadData() {
     setLoading(true);
@@ -80,6 +81,16 @@ export function HomeView({ onNavigate, summary, onMutate }) {
     setShowForm(true);
   }
 
+  async function openExistingClientAction(action) {
+    try {
+      const all = await api.getTasks(token);
+      const task = all.find((t) => t.id === action.task_id);
+      if (task) openTask(task);
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   return (
     <div className="view">
       <header className="view-header">
@@ -143,6 +154,21 @@ export function HomeView({ onNavigate, summary, onMutate }) {
         </div>
       )}
 
+      {existingClientActions.length > 0 && (
+        <div className="alert-card alert-overdue existing-client-actions">
+          <h2>⚠ 既存企業のネクストアクション(期限超過・{existingClientActions.length}件)</h2>
+          <ul>
+            {existingClientActions.map((a) => (
+              <li key={a.id} onClick={() => openExistingClientAction(a)}>
+                <span className="follow-up-date">{a.due_date}</span>
+                <span className="follow-up-company">{a.company_name || a.task_title}</span>
+                <span className="follow-up-title">{a.title}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="toolbar">
         <div className="filters">
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
@@ -161,6 +187,7 @@ export function HomeView({ onNavigate, summary, onMutate }) {
       {showForm && (
         <TaskEditModal
           task={editingTask}
+          statusOptions={editingTask?.status === "既存企業" ? ["既存企業"] : undefined}
           onSubmit={handleUpdate}
           onCancel={() => {
             setShowForm(false);
