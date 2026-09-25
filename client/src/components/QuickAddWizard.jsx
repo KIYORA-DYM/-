@@ -90,6 +90,16 @@ export function QuickAddWizard({ onSubmit, onCancel }) {
         />
       </label>
 
+      <label className="follow-up-field">
+        次回フォロー予定日
+        <input
+          type="date"
+          value={form.next_follow_up_date}
+          onChange={(e) => handleChange("next_follow_up_date", e.target.value)}
+          onClick={(e) => e.target.showPicker?.()}
+        />
+      </label>
+
       <details className="quick-add-more">
         <summary>その他の項目(任意)</summary>
 
@@ -135,26 +145,15 @@ export function QuickAddWizard({ onSubmit, onCancel }) {
           />
         </label>
 
-        <div className="form-row">
-          <label className="follow-up-field">
-            次回フォロー予定日
-            <input
-              type="date"
-              value={form.next_follow_up_date}
-              onChange={(e) => handleChange("next_follow_up_date", e.target.value)}
-              onClick={(e) => e.target.showPicker?.()}
-            />
-          </label>
-          <label>
-            期限
-            <input
-              type="date"
-              value={form.due_date}
-              onChange={(e) => handleChange("due_date", e.target.value)}
-              onClick={(e) => e.target.showPicker?.()}
-            />
-          </label>
-        </div>
+        <label>
+          期限
+          <input
+            type="date"
+            value={form.due_date}
+            onChange={(e) => handleChange("due_date", e.target.value)}
+            onClick={(e) => e.target.showPicker?.()}
+          />
+        </label>
       </details>
 
       <div className="form-actions">

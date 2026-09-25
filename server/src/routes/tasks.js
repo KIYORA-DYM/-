@@ -54,7 +54,7 @@ router.get("/", requireAuth, async (req, res) => {
     query += " AND t.due_date IS NOT NULL AND t.due_date <= date('now') AND t.status NOT IN ('落ち', '既存企業')";
   }
   query +=
-    " ORDER BY t.next_follow_up_date IS NULL, t.next_follow_up_date, CASE t.priority WHEN '高' THEN 0 WHEN '中' THEN 1 ELSE 2 END, t.due_date IS NULL, t.due_date";
+    " ORDER BY t.next_follow_up_date IS NULL, t.next_follow_up_date, CASE t.priority WHEN '高' THEN 0 WHEN '中' THEN 1 ELSE 2 END, t.due_date IS NULL, t.due_date, t.id";
 
   const result = await db.execute({ sql: query, args: params });
   res.json(result.rows);

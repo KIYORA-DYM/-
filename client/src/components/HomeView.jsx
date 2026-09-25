@@ -4,10 +4,16 @@ import { api } from "../api/client";
 import { TaskList } from "./TaskList";
 import { TaskEditModal } from "./TaskEditModal";
 
+const TABS = [
+  { key: "telapo", label: "テレアポタスク" },
+  { key: "normal", label: "通常タスク" },
+  { key: "ochi", label: "落ち" },
+];
+
 export function HomeView({ onNavigate, summary, onMutate }) {
   const { token } = useAuth();
   const [tasks, setTasks] = useState([]);
-  const [statusFilter, setStatusFilter] = useState("");
+  const [tab, setTab] = useState("telapo");
   const [editingTask, setEditingTask] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState("");
@@ -21,9 +27,7 @@ export function HomeView({ onNavigate, summary, onMutate }) {
     setLoading(true);
     setError("");
     try {
-      const params = {};
-      if (statusFilter) params.status = statusFilter;
-      const taskData = await api.getTasks(token, params);
+      const taskData = await api.getTasks(token);
       // 既存企業は専用の「既存企業管理」ページで扱うため、ホームには常に出さない
       setTasks(taskData.filter((t) => t.status !== "既存企業"));
     } catch (err) {
@@ -36,7 +40,7 @@ export function HomeView({ onNavigate, summary, onMutate }) {
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statusFilter]);
+  }, []);
 
   const counts = useMemo(() => {
     return tasks.reduce(
@@ -47,6 +51,14 @@ export function HomeView({ onNavigate, summary, onMutate }) {
       { テレアポ: 0, リスケ: 0, 落ち: 0, 長期追い: 0, 案件化: 0 }
     );
   }, [tasks]);
+
+  // テレアポ/通常タスクは「次にいつフォローするか」が決まっているものだけを
+  // ホームに出す。落ちは普段は非表示で、タブを押したときだけ日付に関係なく見せる。
+  const visibleTasks = useMemo(() => {
+    if (tab === "ochi") return tasks.filter((t) => t.status === "落ち");
+    if (tab === "telapo") return tasks.filter((t) => t.status === "テレアポ" && t.next_follow_up_date);
+    return tasks.filter((t) => t.status !== "テレアポ" && t.status !== "落ち" && t.next_follow_up_date);
+  }, [tasks, tab]);
 
   async function handleUpdate(taskInput) {
     try {
@@ -169,17 +181,20 @@ export function HomeView({ onNavigate, summary, onMutate }) {
         </div>
       )}
 
-      <div className="toolbar">
-        <div className="filters">
-          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-            <option value="">すべてのステータス</option>
-            <option value="テレアポ">テレアポ</option>
-            <option value="リスケ">リスケ</option>
-            <option value="落ち">落ち</option>
-            <option value="長期追い">長期追い</option>
-            <option value="案件化">案件化</option>
-          </select>
-        </div>
+      <div className="home-tabs">
+        {TABS.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            className={`home-tab ${tab === t.key ? "active" : ""}`}
+            onClick={() => setTab(t.key)}
+          >
+            {t.label}
+            {t.key === "ochi" && counts["落ち"] > 0 && (
+              <span className="home-tab-count">{counts["落ち"]}</span>
+            )}
+          </button>
+        ))}
       </div>
 
       {error && <p className="error-text">{error}</p>}
@@ -200,7 +215,7 @@ export function HomeView({ onNavigate, summary, onMutate }) {
         <p>読み込み中...</p>
       ) : (
         <TaskList
-          tasks={tasks}
+          tasks={visibleTasks}
           onEdit={openTask}
           onDelete={handleDelete}
           onStatusChange={handleStatusChange}
