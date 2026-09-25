@@ -482,7 +482,7 @@ label {
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  background: #f2ede2;
+  background: #f2f2f2;
   border-bottom: 1px solid var(--border);
 }
 
@@ -527,11 +527,11 @@ label {
 }
 
 .calendar-cell:hover {
-  background: #faf5ee;
+  background: #f2f2f2;
 }
 
 .calendar-cell-empty {
-  background: #f4efe4;
+  background: #f7f7f7;
   cursor: default;
 }
 
@@ -545,7 +545,7 @@ label {
 }
 
 .calendar-today:hover {
-  background: #ecdccf;
+  background: #d3edf3;
 }
 
 .calendar-today .calendar-date {
@@ -1235,12 +1235,12 @@ label {
 }
 
 .alert-upcoming {
-  background: #ececec;
-  border-color: #dcdcdc;
+  background: var(--accent-soft);
+  border-color: #bfe4ee;
 }
 
 .alert-upcoming h2 {
-  color: #4b4b4b;
+  color: var(--accent-hover);
 }
 
 .follow-up-badge {
@@ -1257,8 +1257,8 @@ label {
 }
 
 .follow-up-soon {
-  background: #ececec;
-  color: #4b4b4b;
+  background: var(--accent-soft);
+  color: var(--accent-hover);
 }
 
 .task-company {
@@ -1470,7 +1470,7 @@ label {
 }
 
 .home-tab:hover {
-  background: #efe8db;
+  background: #f2f2f2;
   color: var(--text);
 }
 
@@ -1538,7 +1538,7 @@ label {
 }
 
 .task-table tr.clickable-row:hover {
-  background: #faf5ee;
+  background: #f2f2f2;
 }
 
 .task-table td.clickable-cell {

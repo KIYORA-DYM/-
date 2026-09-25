@@ -151,7 +151,7 @@ export function HomeView({ onNavigate, summary, onMutate }) {
           )}
           {upcomingFollowUps.length > 0 && (
             <div className="alert-card alert-upcoming">
-              <h2>今週フォロー予定({upcomingFollowUps.length}件)</h2>
+              <h2>今週フォロー予定</h2>
               <ul>
                 {upcomingFollowUps.slice(0, 5).map((t) => (
                   <li key={t.id} onClick={() => openTask(t)}>
