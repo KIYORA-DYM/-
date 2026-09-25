@@ -1,14 +1,14 @@
 const NAV_ITEMS = [
-  { key: "home", label: "ホーム" },
-  { key: "actions", label: "ネクストアクション" },
-  { key: "todo", label: "ToDoリスト" },
-  { key: "memo", label: "メモ" },
-  { key: "add", label: "タスクの追加" },
-  { key: "board", label: "ボード" },
-  { key: "gantt", label: "ガントチャート" },
-  { key: "calendar", label: "カレンダー" },
-  { key: "clients", label: "既存企業管理" },
-  { key: "settings", label: "設定" },
+  { key: "home", label: "ホーム", icon: "🏠" },
+  { key: "actions", label: "ネクストアクション", icon: "🎯" },
+  { key: "todo", label: "ToDoリスト", icon: "✅" },
+  { key: "memo", label: "メモ", icon: "📝" },
+  { key: "add", label: "タスクの追加", icon: "➕" },
+  { key: "board", label: "ボード", icon: "📋" },
+  { key: "gantt", label: "ガントチャート", icon: "📅" },
+  { key: "calendar", label: "カレンダー", icon: "🗓" },
+  { key: "clients", label: "既存企業管理", icon: "🏢" },
+  { key: "settings", label: "設定", icon: "⚙" },
 ];
 
 export function Sidebar({ activeView, onNavigate }) {
@@ -22,6 +22,7 @@ export function Sidebar({ activeView, onNavigate }) {
               className={`sidebar-item ${activeView === item.key ? "active" : ""}`}
               onClick={() => onNavigate(item.key)}
             >
+              <span className="sidebar-icon">{item.icon}</span>
               {item.label}
             </button>
           </li>
