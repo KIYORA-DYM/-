@@ -8,7 +8,7 @@
   --accent-hover: #16788f;
   --accent-soft: #e2f4f8;
   --ink: #111111;
-  --navy: #0d1b3e;
+  --navy: #2f2e41;
   --danger: #b1483a;
   --todo: #a3a3a3;
   --doing: #7b5fc4;
@@ -1035,7 +1035,7 @@ label {
 }
 
 .board-column {
-  background: #ececec;
+  background: #f5f6f8;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 12px;
