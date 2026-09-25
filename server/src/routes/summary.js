@@ -57,7 +57,6 @@ router.get("/", requireAuth, async (req, res) => {
                 AND a.due_date IS NOT NULL
                 AND a.due_date <= date('now')
                 AND a.completed = 0
-                AND t.status != '既存企業'
               ORDER BY a.due_date`,
         args: [userId],
       },

@@ -34,7 +34,7 @@ export function AnnouncementBar({ summary, onRefresh }) {
         task: t,
       });
     }
-    for (const a of (summary?.overdueActions || []).filter((a) => a.task_status !== "既存企業")) {
+    for (const a of summary?.overdueActions || []) {
       list.push({
         key: `action-${a.id}`,
         text: `今日までにやること: ${a.title}(${a.company_name || a.task_title})`,

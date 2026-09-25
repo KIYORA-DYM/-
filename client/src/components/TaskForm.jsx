@@ -227,7 +227,7 @@ export function TaskForm({
         </button>
       </div>
     </form>
-    {initialTask?.id && !isExistingClient && <NextActionChecklist taskId={initialTask.id} />}
+    {initialTask?.id && <NextActionChecklist taskId={initialTask.id} />}
     {initialTask?.id && isExistingClient && <MeetingMinutes taskId={initialTask.id} />}
     </div>
   );
