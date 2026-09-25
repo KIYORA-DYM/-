@@ -11,6 +11,7 @@ import { CalendarView } from "./CalendarView";
 import { ExistingClientsView } from "./ExistingClientsView";
 import { NextActionsView } from "./NextActionsView";
 import { TodoView } from "./TodoView";
+import { MemoView } from "./MemoView";
 import { SettingsView } from "./SettingsView";
 
 const EMPTY_SUMMARY = {
@@ -56,6 +57,7 @@ export function AppShell() {
           )}
           {activeView === "actions" && <NextActionsView />}
           {activeView === "todo" && <TodoView />}
+          {activeView === "memo" && <MemoView />}
           {activeView === "add" && <AddIssueView onNavigate={setActiveView} />}
           {activeView === "board" && <BoardView />}
           {activeView === "gantt" && <GanttView />}

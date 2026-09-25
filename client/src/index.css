@@ -1628,6 +1628,19 @@ label {
   text-align: right;
 }
 
+.memo-textarea {
+  width: 100%;
+  min-height: 60vh;
+  resize: vertical;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+}
+
 .save-indicator.saving {
   color: var(--doing);
 }
