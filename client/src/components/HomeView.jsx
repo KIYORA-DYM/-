@@ -10,10 +10,14 @@ const TABS = [
   { key: "ochi", label: "落ち" },
 ];
 
+const SUMMARY_STATUSES = ["テレアポ", "リスケ", "落ち", "長期追い", "案件化"];
+
 export function HomeView({ onNavigate, summary, onMutate }) {
   const { token } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [tab, setTab] = useState("telapo");
+  // 上部の件数カードを押すと、フォロー予定日の有無に関係なくそのステータスの企業を全件出す
+  const [statusFilter, setStatusFilter] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState("");
@@ -55,10 +59,11 @@ export function HomeView({ onNavigate, summary, onMutate }) {
   // テレアポ/通常タスクは「次にいつフォローするか」が決まっているものだけを
   // ホームに出す。落ちは普段は非表示で、タブを押したときだけ日付に関係なく見せる。
   const visibleTasks = useMemo(() => {
+    if (statusFilter) return tasks.filter((t) => t.status === statusFilter);
     if (tab === "ochi") return tasks.filter((t) => t.status === "落ち");
     if (tab === "telapo") return tasks.filter((t) => t.status === "テレアポ" && t.next_follow_up_date);
     return tasks.filter((t) => t.status !== "テレアポ" && t.status !== "落ち" && t.next_follow_up_date);
-  }, [tasks, tab]);
+  }, [tasks, tab, statusFilter]);
 
   async function handleUpdate(taskInput) {
     try {
@@ -111,26 +116,17 @@ export function HomeView({ onNavigate, summary, onMutate }) {
       </header>
 
       <div className="summary-cards summary-cards-5">
-        <div className="summary-card">
-          <span className="summary-label">テレアポ</span>
-          <span className="summary-value">{counts["テレアポ"]}</span>
-        </div>
-        <div className="summary-card">
-          <span className="summary-label">リスケ</span>
-          <span className="summary-value">{counts["リスケ"]}</span>
-        </div>
-        <div className="summary-card">
-          <span className="summary-label">落ち</span>
-          <span className="summary-value">{counts["落ち"]}</span>
-        </div>
-        <div className="summary-card">
-          <span className="summary-label">長期追い</span>
-          <span className="summary-value">{counts["長期追い"]}</span>
-        </div>
-        <div className="summary-card">
-          <span className="summary-label">案件化</span>
-          <span className="summary-value">{counts["案件化"]}</span>
-        </div>
+        {SUMMARY_STATUSES.map((s) => (
+          <button
+            key={s}
+            type="button"
+            className={`summary-card summary-card-button ${statusFilter === s ? "active" : ""}`}
+            onClick={() => setStatusFilter(statusFilter === s ? null : s)}
+          >
+            <span className="summary-label">{s}</span>
+            <span className="summary-value">{counts[s]}</span>
+          </button>
+        ))}
       </div>
 
       {(overdueFollowUps.length > 0 || upcomingFollowUps.length > 0) && (
@@ -186,13 +182,27 @@ export function HomeView({ onNavigate, summary, onMutate }) {
           <button
             key={t.key}
             type="button"
-            className={`home-tab ${tab === t.key ? "active" : ""}`}
-            onClick={() => setTab(t.key)}
+            className={`home-tab ${!statusFilter && tab === t.key ? "active" : ""}`}
+            onClick={() => {
+              setTab(t.key);
+              setStatusFilter(null);
+            }}
           >
             {t.label}
           </button>
         ))}
       </div>
+
+      {statusFilter && (
+        <div className="status-filter-header">
+          <h2>
+            {statusFilter}の企業一覧({visibleTasks.length}件)
+          </h2>
+          <button type="button" className="secondary" onClick={() => setStatusFilter(null)}>
+            × 閉じる
+          </button>
+        </div>
+      )}
 
       {error && <p className="error-text">{error}</p>}
 
