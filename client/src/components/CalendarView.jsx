@@ -158,15 +158,22 @@ export function CalendarView() {
                 >
                   <div className="calendar-date">{cell.day}</div>
                   {cell.events.length > 0 && (
-                    <div className="calendar-dots">
-                      {cell.events.slice(0, 4).map((ev) => (
+                    <div className="calendar-preview">
+                      {cell.events.slice(0, 2).map((ev) => (
                         <span
                           key={ev.key}
-                          className={`calendar-dot ${
+                          className={`calendar-chip ${
                             ev.kind === "action" ? "event-action" : ev.kind === "due" ? "event-due" : "event-follow"
                           }`}
-                        />
+                        >
+                          {ev.kind === "action"
+                            ? ev.action.title
+                            : ev.task.company_name || ev.task.title}
+                        </span>
                       ))}
+                      {cell.events.length > 2 && (
+                        <span className="calendar-more">+{cell.events.length - 2}件</span>
+                      )}
                     </div>
                   )}
                 </button>

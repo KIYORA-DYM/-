@@ -458,7 +458,7 @@ label {
 }
 
 .calendar-cell {
-  min-height: 64px;
+  min-height: 84px;
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   border-top: none;
@@ -507,17 +507,28 @@ label {
   outline-offset: -2px;
 }
 
-.calendar-dots {
+.calendar-preview {
   display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  align-items: flex-start;
 }
 
-.calendar-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  display: inline-block;
+.calendar-chip {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: #fff;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-more {
+  font-size: 10px;
+  color: var(--text-muted);
 }
 
 .event-due {
