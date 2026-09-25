@@ -21,6 +21,7 @@ export function CalendarView() {
     const now = new Date();
     return { year: now.getFullYear(), month: now.getMonth() };
   });
+  const [selectedDate, setSelectedDate] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState("");
@@ -92,6 +93,7 @@ export function CalendarView() {
       const d = new Date(prev.year, prev.month + delta, 1);
       return { year: d.getFullYear(), month: d.getMonth() };
     });
+    setSelectedDate(null);
   }
 
   function openTaskById(taskId) {
@@ -110,6 +112,8 @@ export function CalendarView() {
       setError(err.message);
     }
   }
+
+  const selectedEvents = selectedDate ? eventsByDate[selectedDate] || [] : [];
 
   return (
     <div className="view view-wide">
@@ -144,49 +148,76 @@ export function CalendarView() {
           <div className="calendar-grid">
             {cells.map((cell, i) =>
               cell ? (
-                <div
+                <button
                   key={cell.dateStr}
-                  className={`calendar-cell ${cell.dateStr === todayStr ? "calendar-today" : ""}`}
+                  type="button"
+                  className={`calendar-cell ${cell.dateStr === todayStr ? "calendar-today" : ""} ${
+                    cell.dateStr === selectedDate ? "calendar-selected" : ""
+                  }`}
+                  onClick={() => setSelectedDate(cell.dateStr === selectedDate ? null : cell.dateStr)}
                 >
                   <div className="calendar-date">{cell.day}</div>
-                  <div className="calendar-events">
-                    {cell.events.map((ev) => {
-                      if (ev.kind === "action") {
-                        const a = ev.action;
-                        return (
-                          <div
-                            key={ev.key}
-                            className="calendar-event event-action"
-                            onClick={() => openTaskById(a.task_id)}
-                            title={`${a.company_name || a.task_title}: ${a.title}`}
-                          >
-                            {a.due_time ? `(${a.due_time}) ` : ""}
-                            {a.title}
-                          </div>
-                        );
-                      }
-                      const t = ev.task;
-                      return (
-                        <div
+                  {cell.events.length > 0 && (
+                    <div className="calendar-dots">
+                      {cell.events.slice(0, 4).map((ev) => (
+                        <span
                           key={ev.key}
-                          className={`calendar-event ${ev.kind === "due" ? "event-due" : "event-follow"}`}
-                          onClick={() => {
-                            setEditingTask(t);
-                            setShowForm(true);
-                          }}
-                          title={t.title}
-                        >
-                          {ev.kind === "due" ? "期限" : "フォロー"}: {t.company_name || t.title}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                          className={`calendar-dot ${
+                            ev.kind === "action" ? "event-action" : ev.kind === "due" ? "event-due" : "event-follow"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </button>
               ) : (
                 <div key={`empty-${i}`} className="calendar-cell calendar-cell-empty" />
               )
             )}
           </div>
+        </div>
+      )}
+
+      {selectedDate && (
+        <div className="card-panel calendar-day-detail">
+          <h2>{selectedDate}の予定({selectedEvents.length}件)</h2>
+          {selectedEvents.length === 0 ? (
+            <p className="muted">この日の予定はありません。</p>
+          ) : (
+            <ul className="calendar-day-list">
+              {selectedEvents.map((ev) => {
+                if (ev.kind === "action") {
+                  const a = ev.action;
+                  return (
+                    <li key={ev.key} onClick={() => openTaskById(a.task_id)}>
+                      <span className={`calendar-day-badge event-action`}>
+                        NA{a.due_time ? `(${a.due_time})` : ""}
+                      </span>
+                      <span className="calendar-day-text">
+                        {a.title}
+                        <span className="muted"> — {a.company_name || a.task_title}</span>
+                      </span>
+                    </li>
+                  );
+                }
+                const t = ev.task;
+                return (
+                  <li
+                    key={ev.key}
+                    onClick={() => {
+                      setEditingTask(t);
+                      setShowForm(true);
+                    }}
+                  >
+                    <span className={`calendar-day-badge ${ev.kind === "due" ? "event-due" : "event-follow"}`}>
+                      {ev.kind === "due" ? "期限" : "フォロー"}
+                    </span>
+                    <span className="calendar-day-text">{t.company_name || t.title}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       )}
 
