@@ -1,13 +1,13 @@
 :root {
-  --text: #193ca3;
-  --text-muted: #5b6d99;
+  --text: #1a1a1a;
+  --text-muted: #6b7280;
   --bg: #ffffff;
   --card-bg: #ffffff;
   --border: #e2e6f0;
   --accent: #193ca3;
   --accent-hover: #132e80;
   --accent-soft: #e3e7f6;
-  --ink: #1c1a17;
+  --ink: #111111;
   --navy: #0d1b3e;
   --danger: #b1483a;
   --todo: #9c9384;
@@ -184,7 +184,7 @@ label {
 }
 
 .pending-text {
-  color: #96662c;
+  color: #4b4b4b;
   background: #f5ecd9;
   border-radius: 0;
   padding: 10px 12px;
@@ -1239,7 +1239,7 @@ label {
 }
 
 .alert-upcoming h2 {
-  color: #96662c;
+  color: #4b4b4b;
 }
 
 .follow-up-badge {
@@ -1257,7 +1257,7 @@ label {
 
 .follow-up-soon {
   background: #f5ecd9;
-  color: #96662c;
+  color: #4b4b4b;
 }
 
 .task-company {
