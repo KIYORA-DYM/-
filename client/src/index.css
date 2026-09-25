@@ -694,7 +694,7 @@ label {
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
   font-weight: 700;
-  border-left-color: #38c6ea;
+  border-left-color: #5aa8c2;
   box-shadow: none;
 }
 
@@ -1235,12 +1235,13 @@ label {
 }
 
 .alert-upcoming {
-  background: var(--accent-soft);
-  border-color: #bfe4ee;
+  background: var(--card-bg);
+  border-color: var(--border);
+  border-left: 3px solid var(--accent);
 }
 
 .alert-upcoming h2 {
-  color: var(--accent-hover);
+  color: var(--text);
 }
 
 .follow-up-badge {
@@ -1257,7 +1258,8 @@ label {
 }
 
 .follow-up-soon {
-  background: var(--accent-soft);
+  background: none;
+  border: 1px solid var(--accent);
   color: var(--accent-hover);
 }
 
